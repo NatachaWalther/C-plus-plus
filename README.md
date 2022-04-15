@@ -393,15 +393,696 @@ int main()
 }
 ```
 ### Sprunganweisungen
-Break springt aus Loop
+Break springt aus Loop,
 Continue macht mit nächster Iteration weiter
 
 
 ## Arrays und Strings
 
+### Vector
+
+Dynamisches Array mit flexibler Grösse
+
+Elemente sind hintereinander im Speicher, bei Einschub in Mitte werden alle Elemente "nach rechts geschoben" -> Rechenaufwand!
+
+``` cpp
+std::vector<int> vec (6);   // Vektor mit Länge von 6
+                            //Standardwerte der 6 Elemente sind 0
+vec[0] = 11;                //Wert an Stelle 0 zuweisen
+```
+
+**Simple Iteration:**
+
+``` cpp
+for (auto element : vec) {
+    std::cout << element << "\n";
+}
+```
+
+Änderungen an `element` haben keine Auswirkungen auf das Element, ausser es wird so genutzt: `for (auto &element : vec)`
+
+**Iterationsfunktionen:**
+
+1. begin() – Returns an iterator pointing to the first element in the vector
+2. end() – Returns an iterator pointing to the theoretical element that follows the last element in the vector
+3. rbegin() – Returns a reverse iterator pointing to the last element in the vector (reverse beginning). It moves from last to first element
+4. rend() – Returns a reverse iterator pointing to the theoretical element preceding the first element in the vector (considered as reverse end)
+5. cbegin() – Returns a constant iterator pointing to the first element in the vector.
+6. cend() – Returns a constant iterator pointing to the theoretical element that follows the last element in the vector.
+7. crbegin() – Returns a constant reverse iterator pointing to the last element in the vector (reverse beginning). It moves from last to first element
+8. crend() – Returns a constant reverse iterator pointing to the theoretical element preceding the first element in the vector (considered as reverse end)
+
+``` cpp
+#include <iostream>
+#include <vector>
+  
+using namespace std;
+  
+int main()
+{
+    vector<int> g1;
+  
+    for (int i = 1; i <= 5; i++)
+        g1.push_back(i);
+  
+    cout << "Output of begin and end: ";
+    for (auto i = g1.begin(); i != g1.end(); ++i)
+        cout << *i << " ";
+  
+    cout << "\nOutput of cbegin and cend: ";
+    for (auto i = g1.cbegin(); i != g1.cend(); ++i)
+        cout << *i << " ";
+  
+    cout << "\nOutput of rbegin and rend: ";
+    for (auto ir = g1.rbegin(); ir != g1.rend(); ++ir)
+        cout << *ir << " ";
+  
+    cout << "\nOutput of crbegin and crend : ";
+    for (auto ir = g1.crbegin(); ir != g1.crend(); ++ir)
+        cout << *ir << " ";
+  
+    return 0;
+}
+```
+
+```
+Output:
+
+Output of begin and end: 1 2 3 4 5 
+Output of cbegin and cend: 1 2 3 4 5 
+Output of rbegin and rend: 5 4 3 2 1 
+Output of crbegin and crend : 5 4 3 2 1
+```
+
+**Kapazität**
+
+1. size() – Returns the number of elements in the vector.
+2. max_size() – Returns the maximum number of elements that the vector can hold.
+3. capacity() – Returns the size of the storage space currently allocated to the vector expressed as number of elements.
+4. resize(n) – Resizes the container so that it contains ‘n’ elements.
+5. empty() – Returns whether the container is empty.
+6. shrink_to_fit() – Reduces the capacity of the container to fit its size and destroys all elements beyond the capacity.
+7. reserve() – Requests that the vector capacity be at least enough to contain n elements.
+
+``` cpp
+#include <iostream>
+#include <vector>
+  
+using namespace std;
+  
+int main()
+{
+    vector<int> g1;
+  
+    for (int i = 1; i <= 5; i++)
+        g1.push_back(i);
+  
+    cout << "Size : " << g1.size();
+    cout << "\nCapacity : " << g1.capacity();
+    cout << "\nMax_Size : " << g1.max_size();
+  
+    // resizes the vector size to 4
+    g1.resize(4);
+  
+    // prints the vector size after resize()
+    cout << "\nSize : " << g1.size();
+  
+    // checks if the vector is empty or not
+    if (g1.empty() == false)
+        cout << "\nVector is not empty";
+    else
+        cout << "\nVector is empty";
+  
+    // Shrinks the vector
+    g1.shrink_to_fit();
+    cout << "\nVector elements are: ";
+    for (auto it = g1.begin(); it != g1.end(); it++)
+        cout << *it << " ";
+  
+    return 0;
+}
+```
+```
+Output:
+Size : 5
+Capacity : 8
+Max_Size : 4611686018427387903
+Size : 4
+Vector is not empty
+Vector elements are: 1 2 3 4
+```
+**Elemntzugriff**
+1. reference operator [g] – Returns a reference to the element at position ‘g’ in the vector
+2. at(g) – Returns a reference to the element at position ‘g’ in the vector
+3. front() – Returns a reference to the first element in the vector
+4. back() – Returns a reference to the last element in the vector
+5. data() – Returns a direct pointer to the memory array used internally by the vector to store its owned elements.
+
+``` cpp
+#include <bits/stdc++.h>
+using namespace std;
+  
+int main()
+{
+    vector<int> g1;
+  
+    for (int i = 1; i <= 10; i++)
+        g1.push_back(i * 10);
+  
+    cout << "\nReference operator [g] : g1[2] = " << g1[2];
+  
+    cout << "\nat : g1.at(4) = " << g1.at(4);
+  
+    cout << "\nfront() : g1.front() = " << g1.front();
+  
+    cout << "\nback() : g1.back() = " << g1.back();
+  
+    // pointer to the first element
+    int* pos = g1.data();
+  
+    cout << "\nThe first element is " << *pos;
+    return 0;
+}
+```
+```
+Output:
+Reference operator [g] : g1[2] = 30
+at : g1.at(4) = 50
+front() : g1.front() = 10
+back() : g1.back() = 100
+The first element is 10
+```
+**Modifiers:**
+
+1. assign() – It assigns new value to the vector elements by replacing old ones
+2. push_back() – It push the elements into a vector from the back
+3. pop_back() – It is used to pop or remove elements from a vector from the back.
+4. insert() – It inserts new elements before the element at the specified position
+5. erase() – It is used to remove elements from a container from the specified position or range.
+6. swap() – It is used to swap the contents of one vector with another vector of same type. Sizes may differ.
+7. clear() – It is used to remove all the elements of the vector container
+8. emplace() – It extends the container by inserting new element at position
+9. emplace_back() – It is used to insert a new element into the vector container, the new element is added to the end of the vector
+
+``` cpp
+#include <bits/stdc++.h>
+#include <vector>
+using namespace std;
+  
+int main()
+{
+    // Assign vector
+    vector<int> v;
+  
+    // fill the array with 10 five times
+    v.assign(5, 10);
+  
+    cout << "The vector elements are: ";
+    for (int i = 0; i < v.size(); i++)
+        cout << v[i] << " ";
+  
+    // inserts 15 to the last position
+    v.push_back(15);
+    int n = v.size();
+    cout << "\nThe last element is: " << v[n - 1];
+  
+    // removes last element
+    v.pop_back();
+  
+    // prints the vector
+    cout << "\nThe vector elements are: ";
+    for (int i = 0; i < v.size(); i++)
+        cout << v[i] << " ";
+  
+    // inserts 5 at the beginning
+    v.insert(v.begin(), 5);
+  
+    cout << "\nThe first element is: " << v[0];
+  
+    // removes the first element
+    v.erase(v.begin());
+  
+    cout << "\nThe first element is: " << v[0];
+  
+    // inserts at the beginning
+    v.emplace(v.begin(), 5);
+    cout << "\nThe first element is: " << v[0];
+  
+    // Inserts 20 at the end
+    v.emplace_back(20);
+    n = v.size();
+    cout << "\nThe last element is: " << v[n - 1];
+  
+    // erases the vector
+    v.clear();
+    cout << "\nVector size after erase(): " << v.size();
+  
+    // two vector to perform swap
+    vector<int> v1, v2;
+    v1.push_back(1);
+    v1.push_back(2);
+    v2.push_back(3);
+    v2.push_back(4);
+  
+    cout << "\n\nVector 1: ";
+    for (int i = 0; i < v1.size(); i++)
+        cout << v1[i] << " ";
+  
+    cout << "\nVector 2: ";
+    for (int i = 0; i < v2.size(); i++)
+        cout << v2[i] << " ";
+  
+    // Swaps v1 and v2
+    v1.swap(v2);
+  
+    cout << "\nAfter Swap \nVector 1: ";
+    for (int i = 0; i < v1.size(); i++)
+        cout << v1[i] << " ";
+  
+    cout << "\nVector 2: ";
+    for (int i = 0; i < v2.size(); i++)
+        cout << v2[i] << " ";
+}
+```
+```
+The vector elements are: 10 10 10 10 10 
+The last element is: 15
+The vector elements are: 10 10 10 10 10 
+The first element is: 5
+The first element is: 10
+The first element is: 5
+The last element is: 20
+Vector size after erase(): 0
+
+Vector 1: 1 2 
+Vector 2: 3 4 
+After Swap 
+Vector 1: 3 4 
+Vector 2: 1 2
+```
+
+### C-Array
+
+Statische Anzahl Elemente, Arbeit mit rohem Speicher
+
+``` cpp
+// Array declaration by specifying size
+int arr1[10];
+  
+// With recent C/C++ versions, we can also
+// declare an array of user specified size
+int n = 10;
+int arr2[n];
+
+// Array declaration by initializing elements
+int arr[] = { 10, 20, 30, 40 }
+  
+// Compiler creates an array of size 4.
+// above is same as  "int arr[4] = {10, 20, 30, 40}"
+
+// Array declaration by specifying size and initializing
+// elements
+int arr[6] = { 10, 20, 30, 40 }
+  
+// Compiler creates an array of size 6, initializes first
+// 4 elements as specified by user and rest two elements as
+// 0. above is same as  "int arr[] = {10, 20, 30, 40, 0, 0}"
+```
+
+**Advantages of an Array in C/C++:**
+
+* Random access of elements using array index.
+* Use of fewer line of code as it creates a single array of multiple elements.
+* Easy access to all the elements.
+* Traversal through the array becomes easy using a single loop.
+* Sorting becomes easy as it can be accomplished by writing fewer line of code.
+
+**Disadvantages of an Array in C/C++:** 
+
+* Allows a fixed number of elements to be entered which is decided at the time of declaration. Unlike a linked list, an array in C is not dynamic.
+* Insertion and deletion of elements can be costly since the elements are needed to be managed in accordance with the new memory allocation.
+
+**Facts about Array in C/C++:**
+
+* Accessing Array Elements: 
+Array elements are accessed by using an integer index. Array index starts with 0 and goes till size of array minus 1.
+* Name of the array is also a pointer to the first element of array.
+
+-> Mehr in Kapitel 6.2.1
+
+### Strings in C++
+
+Strings sind Zeichenketten
+`std::string`
+
+
+``` cpp
+#include <bits/stdc++.h>
+using namespace std;
+  
+int main()
+{
+    // various constructor of string class
+  
+    // initialization by raw string
+    string str1("first string");
+  
+    // initialization by another string
+    string str2(str1);
+  
+    // initialization by character with number of occurrence
+    string str3(5, '#');
+  
+    // initialization by part of another string
+    string str4(str1, 6, 6); //    from 6th index (second parameter)
+                             // 6 characters (third parameter)
+  
+    // initialization by part of another string : iterator version
+    string str5(str2.begin(), str2.begin() + 5);
+  
+    cout << str1 << endl;
+    cout << str2 << endl;
+    cout << str3 << endl;
+    cout << str4 << endl;
+    cout << str5 << endl;
+  
+    //  assignment operator
+    string str6 = str4;
+  
+    // clear function deletes all character from string
+    str4.clear();
+  
+    //  both size() and length() return length of string and
+    //  they work as synonyms
+    int len = str6.length(); // Same as "len = str6.size();"
+  
+    cout << "Length of string is : " << len << endl;
+  
+    // a particular character can be accessed using at /
+    // [] operator
+    char ch = str6.at(2); //  Same as "ch = str6[2];"
+  
+  
+    cout << "third character of string is : " << ch << endl;
+  
+    //  front return first character and back returns last character
+    //  of string
+  
+    char ch_f = str6.front();  // Same as "ch_f = str6[0];"
+    char ch_b = str6.back();   // Same as below
+                               // "ch_b = str6[str6.length() - 1];"
+  
+    cout << "First char is : " << ch_f << ", Last char is : "
+         << ch_b << endl;
+  
+    // c_str returns null terminated char array version of string
+    const char* charstr = str6.c_str();
+    printf("%s\n", charstr);
+  
+    // append add the argument string at the end
+    str6.append(" extension");
+    //  same as str6 += " extension"
+  
+    // another version of append, which appends part of other
+    // string
+    str4.append(str6, 0, 6);  // at 0th position 6 character
+  
+    cout << str6 << endl;
+    cout << str4 << endl;
+  
+    //  find returns index where pattern is found.
+    //  If pattern is not there it returns predefined
+    //  constant npos whose value is -1
+  
+    if (str6.find(str4) != string::npos)
+        cout << "str4 found in str6 at " << str6.find(str4)
+             << " pos" << endl;
+    else
+        cout << "str4 not found in str6" << endl;
+  
+    //  substr(a, b) function returns a substring of b length
+    //  starting from index a
+    cout << str6.substr(7, 3) << endl;
+  
+    //  if second argument is not passed, string till end is
+    // taken as substring
+    cout << str6.substr(7) << endl;
+  
+    //  erase(a, b) deletes b characters at index a
+    str6.erase(7, 4);
+    cout << str6 << endl;
+  
+    //  iterator version of erase
+    str6.erase(str6.begin() + 5, str6.end() - 3);
+    cout << str6 << endl;
+  
+    str6 = "This is a examples";
+  
+    //  replace(a, b, str)  replaces b characters from a index by str
+    str6.replace(2, 7, "ese are test");
+  
+    cout << str6 << endl;
+  
+    return 0;
+}
+```
+```
+Output :
+
+first string
+first string
+#####
+string
+first
+Length of string is : 6
+third character of string is : r
+First char is : s, Last char is : g
+string
+string extension
+string
+str4 found in str6 at 0 pos
+ext
+extension
+string nsion
+strinion
+These are test examples
+```
+
+**Beispielapplikationen:**
+
+``` cpp
+#include <bits/stdc++.h>
+using namespace std;
+  
+// this function returns floating point part of a number-string
+string returnFloatingPart(string str)
+{
+    int pos = str.find(".");
+    if (pos == string::npos)
+        return "";
+    else
+        return str.substr(pos + 1);
+}
+  
+// This function checks whether a string contains all digit or not
+bool containsOnlyDigit(string str)
+{
+    int l = str.length();
+    for (int i = 0; i < l; i++)
+    {
+        if (str.at(i) < '0' || str.at(i) > '9')
+            return false;
+    }
+    //  if we reach here all character are digits
+    return true;
+}
+  
+// this function replaces all single space by %20
+// Used in URLS
+string replaceBlankWith20(string str)
+{
+    string replaceby = "%20";
+    int n = 0;
+  
+    // loop till all space are replaced
+    while ((n = str.find(" ", n)) != string::npos )
+    {
+        str.replace(n, 1, replaceby);
+        n += replaceby.length();
+    }
+    return str;
+}
+  
+// driver function to check above methods
+int main()
+{
+    string fnum = "23.342";
+    cout << "Floating part is : " << returnFloatingPart(fnum) 
+         << endl;
+  
+    string num = "3452";
+    if (containsOnlyDigit(num))
+        cout << "string contains only digit" << endl;
+  
+    string urlex = "google com in";
+    cout << replaceBlankWith20(urlex) << endl;
+  
+    return 0;      
+}
+```
+```
+Floating part is : 342
+string contains only digit
+google%20com%20in
+```
+### C-Strings
+
+Am Ende muss der Terminator `\0` sein!
+
+``` cpp
+char str[4] = "GfG"; /*One extra for string terminator*/
+/*    OR    */
+char str[4] = {‘G’, ‘f’, ‘G’, '\0'}; /* '\0' is string terminator */
+```
+Strings using character pointers 
+Using character pointer strings can be stored in two ways:
+
+1) Read only string in a shared segment. 
+When a string value is directly assigned to a pointer, in most of the compilers, it’s stored in a read-only block (generally in data segment) that is shared among functions. 
+
+``` cpp
+char *str  =  "GfG";  
+```
+In the above line “GfG” is stored in a shared read-only location, but pointer str is stored in a read-write memory. You can change str to point something else but cannot change value at present str. So this kind of string should only be used when we don’t want to modify string at a later stage in the program.
+
+2) Dynamically allocated in heap segment. 
+
+Strings are stored like other dynamically allocated things in C and can be shared among functions. 
+
+``` cpp
+char *str;
+int size = 4; /*one extra for ‘\0’*/
+str = (char *)malloc(sizeof(char)*size);
+*(str+0) = 'G'; 
+*(str+1) = 'f';  
+*(str+2) = 'G';  
+*(str+3) = '\0';  
+```
+Let us see some examples to better understand the above ways to store strings.
+
+``` cpp
+//Example 1 (Try to modify string) 
+//The below program may crash (gives segmentation fault error) because the line *(str+1) = ‘n’ tries to write a read only memory. 
+int main()
+{
+ char *str; 
+ str = "GfG";     /* Stored in read only part of data segment */
+ *(str+1) = 'n'; /* Problem:  trying to modify read only memory */
+ getchar();
+ return 0;
+}
+//The below program works perfectly fine as str[] is stored in writable stack segment. 
+int main()
+{
+ char str[] = "GfG";  /* Stored in stack segment like other auto variables */
+ *(str+1) = 'n';   /* No problem: String is now GnG */
+ getchar();
+ return 0;
+}
+//Below program also works perfectly fine as data at str is stored in writable heap segment. 
+int main()
+{
+  int size = 4;
+  
+  /* Stored in heap segment like other dynamically allocated things */
+  char *str = (char *)malloc(sizeof(char)*size);
+  *(str+0) = 'G'; 
+  *(str+1) = 'f';  
+  *(str+2) = 'G';    
+  *(str+3) = '\0';  
+  *(str+1) = 'n';  /* No problem: String is now GnG */
+   getchar();
+   return 0;
+}   
+
+```
+
+``` cpp
+//Example 2 (Try to return string from a function) 
+//The below program works perfectly fine as the string is stored in a shared segment and data stored remains there even after return of getString() 
+char *getString()
+{
+  char *str = "GfG"; /* Stored in read only part of shared segment */
+  
+  /* No problem: remains at address str after getString() returns*/
+  return str;  
+}     
+  
+int main()
+{
+  printf("%s", getString());  
+  getchar();
+  return 0;
+}
+//The below program also works perfectly fine as the string is stored in heap segment and data stored in heap segment persists even after the return of getString()  
+char *getString()
+{
+  int size = 4;
+  char *str = (char *)malloc(sizeof(char)*size); /*Stored in heap segment*/
+  *(str+0) = 'G'; 
+  *(str+1) = 'f';  
+  *(str+2) = 'G';
+  *(str+3) = '\0';  
+    
+  /* No problem: string remains at str after getString() returns */    
+  return str;  
+}     
+int main()
+{
+  printf("%s", getString());  
+  getchar();
+  return 0;
+}
+//But, the below program may print some garbage data as string is stored in stack frame of function getString() and data may not be there after getString() returns. 
+char *getString()
+{
+  char str[] = "GfG"; /* Stored in stack segment */
+  
+  /* Problem: string may not be present after getString() returns */
+  /* Problem can be solved if write static before char, i.e. static char str[] = "GfG";*/
+  return str; 
+}     
+int main()
+{
+  printf("%s", getString());  
+  getchar();
+  return 0;
+}
+
+```
+```
+
+```
+
+
+
+
+``` cpp
+
+```
+```
+
+```
 
 
 ## Referenzen und Zeiger
+
+``` cpp
+
+```
+```
+
+```
 
 
 
