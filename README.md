@@ -84,7 +84,7 @@ Prefixes: They are basically represent in four types.
 4. Binary-literal(base 2):- 0b or 0B followed by one or more binary digits(0, 1). <br>
 	For example, 0b101, 0B111.
 
-**Chars**
+### Chars
 
 Speicherplatz 1 Byte
 ``` cpp
@@ -92,7 +92,7 @@ char c1 = 'A';
 char c2 = 41; // Auch A -> Siehe ASCII-Tabelle
 ```
 
-**Auto**
+### Auto
 
 Compiler sucht automatisch den passenden Typ
 ``` cpp
@@ -100,7 +100,7 @@ auto days = 365; //int
 auto hello = "hello"; //string
 ```
 
-**Konstanten**
+### Konstanten
 
 Können nach der Initialisierung nicht mehr verändert werden
 
@@ -114,7 +114,101 @@ Konstanten können auch mit `const` deklariert werden, wenn sie nicht zur compile
 
 ## Eingebaute Typen
 
+### Arithmetische Operatoren
 
+Für mathematische Operationen
+
+Operator | Beispiel | Bedeutung
+|---|---|---|
+|+ | x+y | Addition 
+|- | x-y | Subtraktion
+|* | x*y | Multiplikation 
+|/ | x/y | Division
+|% | x%y | Modulo (Rest)
+
+**Beispiel**
+
+``` cpp
+int main() {
+	constexpr double pi = 3.141592;
+	double r = 0.0;
+	std::cout << "Kreisumfangsberechnung\n";
+	std::cout << "Radius eingeben: ";
+	std::cin >> r;
+	if (std::cin.fail()) {
+		std::cerr << "Fehler bei der Eingabe\n";
+		return EXIT_FAILURE;
+	}
+	const double U = 2 * r * pi;	//const, da von Eingabe beinflusst
+	std::cout << "Der Umfang betraegt " << U << "\n";
+	return EXIT_SUCCESS;
+	}
+}
+```
+### Inkrement und Dekrement
+
+| Operator | Bedeutung |
+|---|---|
+|++|Inkrement|
+|--|Dekrement|
+
+```cpp
+int main() {
+	int ivar = 1;
+	std::cout << "ivar = " << ivar << '\n';
+	ivar++;
+	std::cout << "ivar = " << ivar << '\n';
+	std::cout << "ivar = " << ivar++ << '\n'; //Zuerst print, dann erhöhen
+	std::cout << "ivar = " << ivar << '\n';
+	std::cout << "ivar = " << ++ivar << '\n'; //Zuerst erhöhen, dann print
+}
+```
+Output:
+
+ivar = 1
+
+ivar = 2
+
+ivar = 2
+
+ivar = 3
+
+ivar = 4
+
+### Typumwandlung
+
+**Implizit**
+Implizite Casts werden vom Compiler automatisch vorgenommen, z.B. um bei einer arithmetischen Operation die Typen der beiden Operanden einander anzugleichen. Auch bei Funktionsaufrufen:
+
+``` cpp
+int f(float);
+int x = f(1); // konvertiert 1 nach float, um f aufrufen zu können
+```
+
+Wenn Zieltyp den Ausgangstyp aufnehmen kann
+
+**Explizit**
+
+Bisweilen muss ein Cast explizit verlangt werden. Im Beispiel
+``` cpp
+int a = 3, b = 4;
+float x = a/b;
+```
+erhält x den Wert 0, weil die Division zweier Ganzzahlen eine Ganzzahl liefert und den Nachkommateil abschneidet. Sie könnten das Problem lösen, indem Sie eine temporäre float-Variable einführen und damit die Fließkomma-Division erzwingen:
+``` cpp
+int a = 3, b = 4;
+float fa = a;
+float x = fa/b; // jetzt wird x = 0.75 zugewiesen
+```
+Das lässt sich ohne die temporäre Variable eleganter schreiben, entweder in der „klassischen“ Cast-Notation (C-style cast)
+``` cpp
+float x = (float)a/b;
+```
+oder gleichwertig in der funktionalen Notation (function-style cast)
+``` cpp
+float x = float(a)/b;
+```
+Mehr in Kapitel 4
 
 ## Kontrollstrukturen
 
