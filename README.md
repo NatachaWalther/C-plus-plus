@@ -1,4 +1,4 @@
-# C-plus-plus
+ï»¿# C-plus-plus
 
 ## Erste Schritte
 
@@ -54,7 +54,7 @@ int zahl1 {1}, zahl2 {2}, zahl3 {3};
 * Signed -> Mit Vorzeichen (default)
 * Unsigned -> Ohne Vorzeichen
 
-**Übersicht**
+**Ãœbersicht**
 
 Datentyp | Bytes | Range
 ---|---|---
@@ -102,21 +102,21 @@ auto hello = "hello"; //string
 
 ### Konstanten
 
-Können nach der Initialisierung nicht mehr verändert werden
+KÃ¶nnen nach der Initialisierung nicht mehr verÃ¤ndert werden
 
-Müssen direkt initialisiert werden!
+MÃ¼ssen direkt initialisiert werden!
 ``` cpp
 constexpr int months = 12;
 months = 13; //Fehler
 ```
 
-Konstanten können auch mit `const` deklariert werden, wenn sie nicht zur compile Zeit angelegt werden, bsp. Benutzereingaben. Wird auch für Variabeln, Objekte, Zeiger oder Parameter verwendet.
+Konstanten kÃ¶nnen auch mit `const` deklariert werden, wenn sie nicht zur compile Zeit angelegt werden, bsp. Benutzereingaben. Wird auch fÃ¼r Variabeln, Objekte, Zeiger oder Parameter verwendet.
 
 ## Eingebaute Typen
 
 ### Arithmetische Operatoren
 
-Für mathematische Operationen
+FÃ¼r mathematische Operationen
 
 Operator | Beispiel | Bedeutung
 |---|---|---|
@@ -158,9 +158,9 @@ int main() {
 	std::cout << "ivar = " << ivar << '\n';
 	ivar++;
 	std::cout << "ivar = " << ivar << '\n';
-	std::cout << "ivar = " << ivar++ << '\n'; //Zuerst print, dann erhöhen
+	std::cout << "ivar = " << ivar++ << '\n'; //Zuerst print, dann erhÃ¶hen
 	std::cout << "ivar = " << ivar << '\n';
-	std::cout << "ivar = " << ++ivar << '\n'; //Zuerst erhöhen, dann print
+	std::cout << "ivar = " << ++ivar << '\n'; //Zuerst erhÃ¶hen, dann print
 }
 ```
 Output:
@@ -182,7 +182,7 @@ Implizite Casts werden vom Compiler automatisch vorgenommen, z.B. um bei einer a
 
 ``` cpp
 int f(float);
-int x = f(1); // konvertiert 1 nach float, um f aufrufen zu können
+int x = f(1); // konvertiert 1 nach float, um f aufrufen zu kÃ¶nnen
 ```
 
 Wenn Zieltyp den Ausgangstyp aufnehmen kann
@@ -194,13 +194,13 @@ Bisweilen muss ein Cast explizit verlangt werden. Im Beispiel
 int a = 3, b = 4;
 float x = a/b;
 ```
-erhält x den Wert 0, weil die Division zweier Ganzzahlen eine Ganzzahl liefert und den Nachkommateil abschneidet. Sie könnten das Problem lösen, indem Sie eine temporäre float-Variable einführen und damit die Fließkomma-Division erzwingen:
+erhÃ¤lt x den Wert 0, weil die Division zweier Ganzzahlen eine Ganzzahl liefert und den Nachkommateil abschneidet. Sie kÃ¶nnten das Problem lÃ¶sen, indem Sie eine temporÃ¤re float-Variable einfÃ¼hren und damit die FlieÃŸkomma-Division erzwingen:
 ``` cpp
 int a = 3, b = 4;
 float fa = a;
 float x = fa/b; // jetzt wird x = 0.75 zugewiesen
 ```
-Das lässt sich ohne die temporäre Variable eleganter schreiben, entweder in der „klassischen“ Cast-Notation (C-style cast)
+Das lÃ¤sst sich ohne die temporÃ¤re Variable eleganter schreiben, entweder in der â€žklassischenâ€œ Cast-Notation (C-style cast)
 ``` cpp
 float x = (float)a/b;
 ```
@@ -216,7 +216,7 @@ Mehr in Kapitel 4
 
 ``` cpp
 if (a < b ) {
-	cout << "A ist grösser als B\n";
+	cout << "A ist grÃ¶sser als B\n";
 } else if (a > b ) {
 	cout << "A ist kleiner als B\n";
 }else {
@@ -291,7 +291,7 @@ int main()
     return 0;
 }
 ```
-Bedingung wird zuerst geprüft
+Bedingung wird zuerst geprÃ¼ft
 
 ### Do While
 
@@ -302,7 +302,7 @@ do
 }
 while (condition);
 ```
-Bedingung wird nacher überprüft
+Bedingung wird nacher Ã¼berprÃ¼ft
 
 ### For
 
@@ -394,19 +394,19 @@ int main()
 ```
 ### Sprunganweisungen
 Break springt aus Loop,
-Continue macht mit nächster Iteration weiter
+Continue macht mit nÃ¤chster Iteration weiter
 
 
 ## Arrays und Strings
 
 ### Vector
 
-Dynamisches Array mit flexibler Grösse
+Dynamisches Array mit flexibler GrÃ¶sse
 
 Elemente sind hintereinander im Speicher, bei Einschub in Mitte werden alle Elemente "nach rechts geschoben" -> Rechenaufwand!
 
 ``` cpp
-std::vector<int> vec (6);   // Vektor mit Länge von 6
+std::vector<int> vec (6);   // Vektor mit LÃ¤nge von 6
                             //Standardwerte der 6 Elemente sind 0
 vec[0] = 11;                //Wert an Stelle 0 zuweisen
 ```
@@ -419,18 +419,18 @@ for (auto element : vec) {
 }
 ```
 
-Änderungen an `element` haben keine Auswirkungen auf das Element, ausser es wird so genutzt: `for (auto &element : vec)`
+Ã„nderungen an `element` haben keine Auswirkungen auf das Element, ausser es wird so genutzt: `for (auto &element : vec)`
 
 **Iterationsfunktionen:**
 
-1. begin() – Returns an iterator pointing to the first element in the vector
-2. end() – Returns an iterator pointing to the theoretical element that follows the last element in the vector
-3. rbegin() – Returns a reverse iterator pointing to the last element in the vector (reverse beginning). It moves from last to first element
-4. rend() – Returns a reverse iterator pointing to the theoretical element preceding the first element in the vector (considered as reverse end)
-5. cbegin() – Returns a constant iterator pointing to the first element in the vector.
-6. cend() – Returns a constant iterator pointing to the theoretical element that follows the last element in the vector.
-7. crbegin() – Returns a constant reverse iterator pointing to the last element in the vector (reverse beginning). It moves from last to first element
-8. crend() – Returns a constant reverse iterator pointing to the theoretical element preceding the first element in the vector (considered as reverse end)
+1. begin() â€“ Returns an iterator pointing to the first element in the vector
+2. end() â€“ Returns an iterator pointing to the theoretical element that follows the last element in the vector
+3. rbegin() â€“ Returns a reverse iterator pointing to the last element in the vector (reverse beginning). It moves from last to first element
+4. rend() â€“ Returns a reverse iterator pointing to the theoretical element preceding the first element in the vector (considered as reverse end)
+5. cbegin() â€“ Returns a constant iterator pointing to the first element in the vector.
+6. cend() â€“ Returns a constant iterator pointing to the theoretical element that follows the last element in the vector.
+7. crbegin() â€“ Returns a constant reverse iterator pointing to the last element in the vector (reverse beginning). It moves from last to first element
+8. crend() â€“ Returns a constant reverse iterator pointing to the theoretical element preceding the first element in the vector (considered as reverse end)
 
 ``` cpp
 #include <iostream>
@@ -474,15 +474,15 @@ Output of rbegin and rend: 5 4 3 2 1
 Output of crbegin and crend : 5 4 3 2 1
 ```
 
-**Kapazität**
+**KapazitÃ¤t**
 
-1. size() – Returns the number of elements in the vector.
-2. max_size() – Returns the maximum number of elements that the vector can hold.
-3. capacity() – Returns the size of the storage space currently allocated to the vector expressed as number of elements.
-4. resize(n) – Resizes the container so that it contains ‘n’ elements.
-5. empty() – Returns whether the container is empty.
-6. shrink_to_fit() – Reduces the capacity of the container to fit its size and destroys all elements beyond the capacity.
-7. reserve() – Requests that the vector capacity be at least enough to contain n elements.
+1. size() â€“ Returns the number of elements in the vector.
+2. max_size() â€“ Returns the maximum number of elements that the vector can hold.
+3. capacity() â€“ Returns the size of the storage space currently allocated to the vector expressed as number of elements.
+4. resize(n) â€“ Resizes the container so that it contains â€˜nâ€™ elements.
+5. empty() â€“ Returns whether the container is empty.
+6. shrink_to_fit() â€“ Reduces the capacity of the container to fit its size and destroys all elements beyond the capacity.
+7. reserve() â€“ Requests that the vector capacity be at least enough to contain n elements.
 
 ``` cpp
 #include <iostream>
@@ -532,11 +532,11 @@ Vector is not empty
 Vector elements are: 1 2 3 4
 ```
 **Elemntzugriff**
-1. reference operator [g] – Returns a reference to the element at position ‘g’ in the vector
-2. at(g) – Returns a reference to the element at position ‘g’ in the vector
-3. front() – Returns a reference to the first element in the vector
-4. back() – Returns a reference to the last element in the vector
-5. data() – Returns a direct pointer to the memory array used internally by the vector to store its owned elements.
+1. reference operator [g] â€“ Returns a reference to the element at position â€˜gâ€™ in the vector
+2. at(g) â€“ Returns a reference to the element at position â€˜gâ€™ in the vector
+3. front() â€“ Returns a reference to the first element in the vector
+4. back() â€“ Returns a reference to the last element in the vector
+5. data() â€“ Returns a direct pointer to the memory array used internally by the vector to store its owned elements.
 
 ``` cpp
 #include <bits/stdc++.h>
@@ -574,15 +574,15 @@ The first element is 10
 ```
 **Modifiers:**
 
-1. assign() – It assigns new value to the vector elements by replacing old ones
-2. push_back() – It push the elements into a vector from the back
-3. pop_back() – It is used to pop or remove elements from a vector from the back.
-4. insert() – It inserts new elements before the element at the specified position
-5. erase() – It is used to remove elements from a container from the specified position or range.
-6. swap() – It is used to swap the contents of one vector with another vector of same type. Sizes may differ.
-7. clear() – It is used to remove all the elements of the vector container
-8. emplace() – It extends the container by inserting new element at position
-9. emplace_back() – It is used to insert a new element into the vector container, the new element is added to the end of the vector
+1. assign() â€“ It assigns new value to the vector elements by replacing old ones
+2. push_back() â€“ It push the elements into a vector from the back
+3. pop_back() â€“ It is used to pop or remove elements from a vector from the back.
+4. insert() â€“ It inserts new elements before the element at the specified position
+5. erase() â€“ It is used to remove elements from a container from the specified position or range.
+6. swap() â€“ It is used to swap the contents of one vector with another vector of same type. Sizes may differ.
+7. clear() â€“ It is used to remove all the elements of the vector container
+8. emplace() â€“ It extends the container by inserting new element at position
+9. emplace_back() â€“ It is used to insert a new element into the vector container, the new element is added to the end of the vector
 
 ``` cpp
 #include <bits/stdc++.h>
@@ -707,6 +707,131 @@ int arr[6] = { 10, 20, 30, 40 }
 // Compiler creates an array of size 6, initializes first
 // 4 elements as specified by user and rest two elements as
 // 0. above is same as  "int arr[] = {10, 20, 30, 40, 0, 0}"
+
+
+//Accessing Elements
+double element = arr[9];
+
+//_____________________________EXAMPLE_______________________________________
+int main () {
+
+   int n[ 10 ]; /* n is an array of 10 integers */
+   int i,j;
+ 
+   /* initialize elements of array n to 0 */         
+   for ( i = 0; i < 10; i++ ) {
+      n[ i ] = i + 100; /* set element at location i to i + 100 */
+   }
+   
+   /* output each array element's value */
+   for (j = 0; j < 10; j++ ) {
+      printf("Element[%d] = %d\n", j, n[j] );
+   }
+ 
+   return 0;
+}
+
+//Two Dimensional
+type arrayName [ x ][ y ];
+
+int a[3][4] = {  
+   {0, 1, 2, 3} ,   /*  initializers for row indexed by 0 */
+   {4, 5, 6, 7} ,   /*  initializers for row indexed by 1 */
+   {8, 9, 10, 11}   /*  initializers for row indexed by 2 */
+};
+//The nested braces, which indicate the intended row, are optional. The following initialization is equivalent to the previous example âˆ’
+
+int a[3][4] = {0,1,2,3,4,5,6,7,8,9,10,11};  //Zuerst alle Elemente erste Zeile, etc.
+
+//access
+int val = a[2][3];
+
+int main () {
+
+   /* an array with 5 rows and 2 columns*/
+   int a[5][2] = { {0,0}, {1,2}, {2,4}, {3,6},{4,8}};
+   int i, j;
+ 
+   /* output each array element's value */
+   for ( i = 0; i < 5; i++ ) {
+
+      for ( j = 0; j < 2; j++ ) {
+         printf("a[%d][%d] = %d\n", i,j, a[i][j] );
+      }
+   }
+   
+   return 0;
+}
+
+//Output
+a[0][0]: 0
+a[0][1]: 0
+a[1][0]: 1
+a[1][1]: 2
+a[2][0]: 2
+a[2][1]: 4
+a[3][0]: 3
+a[3][1]: 6
+a[4][0]: 4
+a[4][1]: 8
+
+//Pass Array to function
+//Way-1 Formal parameters as a pointer âˆ’
+
+void myFunction(int *param) {
+   .
+   .
+   .
+}
+
+//Way-2 Formal parameters as a sized array âˆ’
+
+void myFunction(int param[10]) {
+   .
+   .
+   .
+}
+//Way-3 Formal parameters as an unsized array âˆ’
+
+void myFunction(int param[]) {
+   .
+   .
+   .
+}
+
+//Example of usage
+double getAverage(int arr[], int size) {
+
+   int i;
+   double avg;
+   double sum = 0;
+
+   for (i = 0; i < size; ++i) {
+      sum += arr[i];
+   }
+
+   avg = sum / size;
+
+   return avg;
+}
+/* function declaration */
+double getAverage(int arr[], int size);
+
+int main () {
+
+   /* an int array with 5 elements */
+   int balance[5] = {1000, 2, 3, 17, 50};
+   double avg;
+
+   /* pass pointer to the array as an argument */
+   avg = getAverage( balance, 5 ) ;
+ 
+   /* output the returned value */
+   printf( "Average value is: %f ", avg );
+    
+   return 0;
+}
+
 ```
 
 **Advantages of an Array in C/C++:**
@@ -942,18 +1067,18 @@ Am Ende muss der Terminator `\0` sein!
 ``` cpp
 char str[4] = "GfG"; /*One extra for string terminator*/
 /*    OR    */
-char str[4] = {‘G’, ‘f’, ‘G’, '\0'}; /* '\0' is string terminator */
+char str[4] = {â€˜Gâ€™, â€˜fâ€™, â€˜Gâ€™, '\0'}; /* '\0' is string terminator */
 ```
 Strings using character pointers 
 Using character pointer strings can be stored in two ways:
 
 1) Read only string in a shared segment. 
-When a string value is directly assigned to a pointer, in most of the compilers, it’s stored in a read-only block (generally in data segment) that is shared among functions. 
+When a string value is directly assigned to a pointer, in most of the compilers, itâ€™s stored in a read-only block (generally in data segment) that is shared among functions. 
 
 ``` cpp
 char *str  =  "GfG";  
 ```
-In the above line “GfG” is stored in a shared read-only location, but pointer str is stored in a read-write memory. You can change str to point something else but cannot change value at present str. So this kind of string should only be used when we don’t want to modify string at a later stage in the program.
+In the above line â€œGfGâ€ is stored in a shared read-only location, but pointer str is stored in a read-write memory. You can change str to point something else but cannot change value at present str. So this kind of string should only be used when we donâ€™t want to modify string at a later stage in the program.
 
 2) Dynamically allocated in heap segment. 
 
@@ -961,7 +1086,7 @@ Strings are stored like other dynamically allocated things in C and can be share
 
 ``` cpp
 char *str;
-int size = 4; /*one extra for ‘\0’*/
+int size = 4; /*one extra for â€˜\0â€™*/
 str = (char *)malloc(sizeof(char)*size);
 *(str+0) = 'G'; 
 *(str+1) = 'f';  
@@ -972,7 +1097,7 @@ Let us see some examples to better understand the above ways to store strings.
 
 ``` cpp
 //Example 1 (Try to modify string) 
-//The below program may crash (gives segmentation fault error) because the line *(str+1) = ‘n’ tries to write a read only memory. 
+//The below program may crash (gives segmentation fault error) because the line *(str+1) = â€˜nâ€™ tries to write a read only memory. 
 int main()
 {
  char *str; 
@@ -1059,24 +1184,296 @@ int main()
   return 0;
 }
 
+
+//Pointer Magic with Arrays
+double balance[50];
+//balance is a pointer to &balance[0], which is the address of the first element of the array balance
+//Thus, the following program fragment assigns p as the address of the first element of balance âˆ’
+
+double *p;
+double balance[10];
+
+p = balance;
+//It is legal to use array names as constant pointers, and vice versa. Therefore, *(balance + 4) is a legitimate way of accessing the data at balance[4].
+//Once you store the address of the first element in 'p', you can access the array elements using *p, *(p+1), *(p+2) and so on. Given below is the example to show all the concepts discussed above âˆ’
+
+int main () {
+
+   /* an array with 5 elements */
+   double balance[5] = {1000.0, 2.0, 3.4, 17.0, 50.0};
+   double *p;
+   int i;
+
+   p = balance;
+ 
+   /* output each array element's value */
+   printf( "Array values using pointer\n");
+	
+   for ( i = 0; i < 5; i++ ) {
+      printf("*(p + %d) : %f\n",  i, *(p + i) );
+   }
+
+   printf( "Array values using balance as address\n");
+	
+   for ( i = 0; i < 5; i++ ) {
+      printf("*(balance + %d) : %f\n",  i, *(balance + i) );
+   }
+ 
+   return 0;
+}
+
+//Output:
+Array values using pointer
+*(p + 0) : 1000.000000
+*(p + 1) : 2.000000
+*(p + 2) : 3.400000
+*(p + 3) : 17.000000
+*(p + 4) : 50.000000
+Array values using balance as address
+*(balance + 0) : 1000.000000
+*(balance + 1) : 2.000000
+*(balance + 2) : 3.400000
+*(balance + 3) : 17.000000
+*(balance + 4) : 50.000000
 ```
-```
-
-```
-
-
-
-
-``` cpp
-
-```
-```
-
-```
-
 
 ## Referenzen und Zeiger
 
+Unterschied: Referenzen zeigen auf Objekte, Pointer zeigen auf dessen Adressen!
+
+### Referenzen
+Alias fÃ¼r ein Speicherobjekt 
+
+
+``` cpp
+//Leerzeichen kÃ¶nnen beliebig gesetzt werden:
+int x = 10;
+
+int &ref = x;
+int& ref = x;
+int &ref = {x};
+int &ref {x};
+
+int main()
+{
+  int x = 10;
+ 
+  // ref is a reference to x.
+  int& ref = x;
+ 
+  // Value of x is now changed to 20
+  ref = 20;
+  cout << "x = " << x << '\n';
+ 
+  // Value of x is now changed to 30
+  x = 30;
+  cout << "ref = " << ref << '\n';
+ 
+  return 0;
+}
+```
+```
+x = 20
+ref = 30
+```
+Ist die Referenz an ein Objekt gebunden, verÃ¤ndert die Anpassung der Referenz auch das Objekt!
+``` cpp
+int var = 100;
+int othervar = 200;
+
+int& ref1 = var;
+int& ref2 {var};
+
+ref1 = othervar;    //ref1 und damit auch var wird auf 200 geÃ¤ndert
+```
+### Zeiger
+
+Rohe Pointer nur verwenden, wenn es sein muss!
+ReprÃ¤sentieren Datentyp und Adresse eines Speicherobjekts `datentyp *name`
+
+Leerzeichen vor und nach dem Stern sind egal!
+Achtung, der Zeigertyp muss vom selben Datentyp sein, wie das Objekt
+
+**Zuweisung**
+``` cpp
+
+int var = 123;
+int *ptr = &var;    //Zeiger prt zeigt auf var
+```
+Der Adressoperator & ermittelt die Adresse eines Speicherobjekts
+
+Variable | Adresse | Wert
+|---|---|---|
+|int var|0x19F934|123|
+|int* ptr|0x19F928|0x19F934|
+
+Der Pointer ist Separat abgelegt (eigene Speicheradresse) und zeigt auf die Adresse der Variable
+
+-> Indirekter Zugriff auf den Wert der Variable
+
+``` cpp
+int var = 123;
+int* ptr = &var;                                    //Adresse von var zuweisen
+cout << "Adresse von var : " << &var << "\n";       //Adresse der Variable
+cout << "ptr verweist auf : " << ptr << "\n";       //Adresse auf die Pointer zeigt
+cout << "Adresse von ptr : " << &ptr << "\n";       //Adresse der Pointers
+cout << "Wert von var : " << *ptr << "\n";          //Wert auf den Pointer zeigt
+```
+```
+Adresse von var : 0x7ffe017db27c
+ptr verweist auf : 0x7ffe017db27c
+Adresse von ptr : 0x7ffe017db280
+Wert von var: 123
+```
+**Dereferenzierung**
+
+Zugriff auf Wert auf den Pointer zeigt mit `*ptr`
+
+
+**Nullpointer**
+
+Zeiger die nicht direkt auf Veriable zeigend erstellt werden zeigen auf einen zufÃ¤lligen Wert im Speicher, Nullpointer zeigen ins Leere
+
+``` cpp
+char* ptr = nullptr;    //Wird als Nullpointer erzeugt
+int *ptr;               //ZufÃ¤lliger zugewiesener Wert
+```
+ÃœberprÃ¼fung des Zeigers
+
+``` cpp
+if (ptr == nullptr) {
+cout << "Ich zeige ins Nichts!\n"
+}
+```
+
+```cpp
+#include <iostream>
+using namespace std;
+ 
+int main()
+{
+    // A normal integer variable
+    int Var = 10;
+ 
+    // A pointer variable that holds address of var.
+    int *ptr = &Var;
+ 
+    // This line prints value at address stored in ptr.
+    // Value stored is value of variable "var"
+    cout << "Value of Var = "<< *ptr << endl;
+ 
+    // The output of this line may be different in different
+    // runs even on same machine.
+    cout << "Address of Var = " <<  ptr << endl;
+ 
+    // We can also use ptr as lvalue (Left hand
+    // side of assignment)
+    *ptr = 20; // Value at address is now 20
+ 
+    // This prints 20
+    cout << "After doing *ptr = 20, *ptr is "<< *ptr << endl;
+ 
+    return 0;
+}
+```
+```
+Output : 
+Value of Var = 10
+Address of Var = 0x7fffa057dd4
+After doing *ptr = 20, *ptr is 20
+```
+**Mathe mit Pointern:**
+
+Nur in einem Array anwenden!
+
+* incremented ( ++ )
+* decremented ( â€” )
+* an integer may be added to a pointer ( + or += )
+* an integer may be subtracted from a pointer ( â€“ or -= )
+
+Pointers contain addresses. Adding two addresses makes no sense, because there is no idea what it would point to. 
+*Subtracting* two addresses lets you compute the offset between these two addresses.
+
+
+``` cpp
+#include <bits/stdc++.h>
+ 
+// Driver program
+int main()
+{
+    // Declare an array
+    int v[3] = {10, 100, 200};
+ 
+    // Declare pointer variable
+    int *ptr;
+ 
+    // Assign the address of v[0] to ptr
+    ptr = v;
+ 
+    for (int i = 0; i < 3; i++)
+    {
+        printf("Value of *ptr = %d\n", *ptr);
+        printf("Value of ptr = %p\n\n", ptr);
+ 
+        // Increment pointer ptr by 1
+        ptr++;
+    }
+}
+```
+```
+Output:Value of *ptr = 10
+Value of ptr = 0x7ffcae30c710
+
+Value of *ptr = 100
+Value of ptr = 0x7ffcae30c714
+
+Value of *ptr = 200
+Value of ptr = 0x7ffcae30c718
+```
+
+An array name acts like a pointer constant. The value of this pointer constant is the address of the first element. 
+For example, if we have an array named val then val and &val[0] can be used interchangeably. 
+
+
+`int nums[2][3]  =  { {16, 18, 20}, {25, 26, 27} };`
+
+In general, nums[i][j] is equivalent to *(*(nums+i)+j)
+
+Pointer Notation	|Array Notation|	Value
+---|---|---
+*(*nums)	|nums[0][0]|	16
+*(*nums + 1)	|nums[0][1]|	18
+*(*nums + 2)	|nums[0][2]	|20
+*(*(nums + 1))	|nums[1][0]	|25
+*(*(nums + 1) + 1)	|nums[1][1]	|26
+*(*(nums + 1) + 2)	|nums[1][2]	|27
+
+## Funktionen
+
+``` cpp
+
+```
+```
+
+```
+``` cpp
+
+```
+```
+
+```
+``` cpp
+
+```
+```
+
+```
+``` cpp
+
+```
+```
+
+```
 ``` cpp
 
 ```
@@ -1084,16 +1481,11 @@ int main()
 
 ```
 
-
-
-## Funktionen
-
-
-## Modularisierung und Präprozessor
+## Modularisierung und PrÃ¤prozessor
 
 
 
-## Strukturen, Aufzählungen und dynamische Speicherobjekte
+## Strukturen, AufzÃ¤hlungen und dynamische Speicherobjekte
 
 
 
@@ -1105,7 +1497,7 @@ int main()
 
 
 
-## Operatoren überladen
+## Operatoren Ã¼berladen
 
 
 
