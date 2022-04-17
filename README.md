@@ -1450,39 +1450,388 @@ Pointer Notation	|Array Notation|	Value
 
 ## Funktionen
 
+### Definition
+
+`[Spezfizierer] <Datentyp> <Funktionsname> ( [Parameter] ) {//Anweisungen}`
+
+Aufrufen mit `funktionsname([Parameter])`
+
+Wichtig, wenn ein Rückgabetyp definiert ist, die Rückgabe nicht vergessen!
+
+Funktionsprototyp
+
+``` cpp
+int main()
+{
+   foo();           //Prototyp
+   getchar();
+   return 0;
+}
+void foo()          //Definition der Funktion
+{
+   printf("foo called");
+}
+```
+
+### Parameter
+
+Parameter werden nicht verändert, wenn sie nicht als Referenz übergeben werden!
+```cpp
+#include <iostream>
+using namespace std;
+  
+void fun(int x) {
+    x = 30;
+}
+  
+int main() {
+    int x = 20;
+    fun(x);
+    cout << "x = " << x;
+    return 0;
+}
+```
+**Konstante Funktionsparameter**
+
+Die Parameter können auch noch via const unveränderlich gemacht werden `void addieren(const int value1, const int value2);`
+
+**Standardparameter**
+
+Funktionsparameter mit einem Wert vorbelegen, wenn Funktion ohne Parameter aufgerufen wird, werden diese verwendet.
+Wichtig, nur die Parameter am Ende können gegeben sein und dann alle, Sprich nicht Param 1 angeben und 2 und 3 dann nicht!
+
+
+``` cpp
+#include <iostream>
+using namespace std;
+ 
+// A function with default arguments,
+// it can be called with
+// 2 arguments or 3 arguments or 4 arguments.
+int sum(int x, int y, int z = 0, int w = 0)
+{
+    return (x + y + z + w);
+}
+ 
+// Driver Code
+int main()
+{
+    // Statement 1
+    cout << sum(10, 15) << endl;
+   
+    // Statement 2
+    cout << sum(10, 15, 25) << endl;
+   
+    // Statement 3
+    cout << sum(10, 15, 25, 30) << endl;
+    return 0;
+}
+```
+**Rückgabewert nutzen**
+
+```cpp
+
+int sum (int a, int b);
+main() {
+    int a = 10;
+    int b = 20;
+    sum = sum(a, b);
+
+}
+int sum(int a, int b) {
+    sum = a + b;
+    return sum;
+}
+```
+
+### Funktionen überladen
+
+Mehrere Funktionen mit demselben Namen verwenden, mit unterschiedlichen Parametern.
+
 ``` cpp
 
-```
+#include <iostream>
+using namespace std;
+ 
+void print(int i) {
+  cout << " Here is int " << i << endl;
+}
+void print(double  f) {
+  cout << " Here is float " << f << endl;
+}
+void print(char const *c) {
+  cout << " Here is char* " << c << endl;
+}
+ 
+int main() {
+  print(10);
+  print(10.10);
+  print("ten");
+  return 0;
+}
 ```
 
+How  Function Overloading works?
+* Exact match:- (Function name and Parameter)
+* If a not exact match is found:
+  * ->Char, Unsigned char, and short are promoted to an int.
+  *  ->Float is promoted to double
+
+* If no match found:
+  * ->C++ tries to find a match through the standard conversion.
+
+* ELSE ERROR 🙁
+
+Der Rückgabetyp dient nicht der Unterscheidung, float sum() und int sum() sind für den Compiler identisch!
+
+### Gültigkeit und Sichtbarkeit von Variabeln
+Wenn innerhalb Anwendungsblock definiert, sind sie nur darin gültig.
+```cpp
+int foo;        // global variable
+
+int some_function ()
+{
+  int bar;      // local variable
+  bar = 0;
+}
+
+int other_function ()
+{
+  foo = 1;  // ok: foo is a global variable
+  bar = 2;  // wrong: bar is not visible from this function
+}
 ```
+
+Wenn mehrere Variabeln gleich heissen, gewinnt die lokalste
 ``` cpp
+// inner block scopes
+#include <iostream>
+using namespace std;
 
-```
+int main () {
+  int x = 10;
+  int y = 20;
+  {
+    int x;   // ok, inner scope.
+    x = 50;  // sets value to inner x
+    y = 50;  // sets value to (outer) y
+    cout << "inner block:\n";
+    cout << "x: " << x << '\n';
+    cout << "y: " << y << '\n';
+  }
+  cout << "outer block:\n";
+  cout << "x: " << x << '\n';
+  cout << "y: " << y << '\n';
+  return 0;
+}
 ```
 
+Zugriff auf Globale Variable mit `::variable`
+
+### Referenzen als Parameter
+
+Parameter werden beim Funktionsaufruf als Kopie mitgegeben, somit werden diese in der Funktion nicht verändert.
+
+
+
+```cpp
+void swap(int& a, int& b);
+main() {
+    int a = 1;
+    int b = 2;
+
+swap(a, b);
+}
+
+void swap(int& a, int& b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}
 ```
+
+Spart bei grossen Objekten auch Rechenzeit, da keine kopie erstellt werden muss.
+
+Wenn eine Funktion die parameter als Referenz erhält, diese aber nicht ändern soll, werden Konstanten verwendet.
+
 ``` cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+void myfunction(const string& byconstreference)
+{
+     cout << "Arguments passed by const reference: " <<
+     byconstreference;
+}
+
+int main()
+{
+    string s = "Hello World!";
+    myfunction(s);
+}
+```
+
+### Rückgabe von Referenzen
+
+Das Referenzierte Objekt muss ausserhalb der Funktion existieren.
+
+```cpp
+#include <iostream>
+#include <ctime>
+ 
+using namespace std;
+ 
+double vals[] = {10.1, 12.6, 33.1, 24.1, 50.0};
+ 
+double& setValues( int i ) {
+   return vals[i];   // return a reference to the ith element
+}
+ 
+// main function to call above defined function.
+int main () {
+ 
+   cout << "Value before change" << endl;
+   for ( int i = 0; i < 5; i++ ) {
+      cout << "vals[" << i << "] = ";
+      cout << vals[i] << endl;
+   }
+ 
+   setValues(1) = 20.23; // change 2nd element
+   setValues(3) = 70.8;  // change 4th element
+ 
+   cout << "Value after change" << endl;
+   for ( int i = 0; i < 5; i++ ) {
+      cout << "vals[" << i << "] = ";
+      cout << vals[i] << endl;
+   }
+   return 0;
+}
+```
 
 ```
+Value before change
+vals[0] = 10.1
+vals[1] = 12.6
+vals[2] = 33.1
+vals[3] = 24.1
+vals[4] = 50
+Value after change
+vals[0] = 10.1
+vals[1] = 20.23
+vals[2] = 33.1
+vals[3] = 70.8
+vals[4] = 50
 ```
 
-```
-``` cpp
+### Zeiger als Parameter
 
-```
+
+```cpp
+
+#include <iostream>
+  
+using namespace std;
+  
+int global_Var = 42;
+  
+// function to change pointer value
+void changePointerValue(int* pp)
+{
+    pp = &global_Var;
+}
+  
+int main()
+{
+    int var = 23;
+    int* ptr_to_var = &var;
+  
+    cout << "Passing Pointer to function:" << endl;
+  
+    cout << "Before :" << *ptr_to_var << endl; // display 23
+  
+    changePointerValue(ptr_to_var);
+  
+    cout << "After :" << *ptr_to_var << endl; // display 23
+  
+    return 0;
+}
 ```
 
-```
-``` cpp
-
-```
-```
-
-```
+Wichtig, als Parameter die Adresse nutzen und in der Funktion den Wert
 
 ## Modularisierung und Präprozessor
 
+### Präprozessor Direktiven
+Wird vor dem Compiler aktiv, fasst String Literale zusammen, entfernt Kommentare etc. 
+
+Präprozessor Direktiven: 
+* Header- und Quelldateien (#include) in den Quelltext kopieren
+* symbolische Konstanten definieren (#define)
+* bedingte Kompilierung steuern (#ifdef, #elseif)
+
+### #include
+
+Anweisung Quellcode aus anderer Datei einzufügen `#include datei`
+Standard Headerdateien werden mit `#inclide <datei>` eingefügt, Bsp.: `#include <iostream>`
+
+-> Dateipfade beachten!
+
+### #define
+
+Ersetzt Quelltext vor der Übersetzung durch andere Texte. Stumpfe Textersetzung
+
+`#define PI 3.1415` definiert PI als Makro
+
+-> Meist in Grossbuchstaben
+
+Konstanten mit const oder constexpr oder enums sind besser und weniger fehleranfällig
+
+Aufheben mit `#undef PI`
+
+### Bedingte Kompilierung
+
+Bedingungen um Quelltext für Compiler ein- und auszublenden.
+
+Bsp. um Code auf mehreren Plattformen zu nutzen.
+
+Schlüsselwort | Beschreibung
+---|---
+#if ausdruck | wird ausdruck erfüllt (!= 0) wird der folgende Dateinhalt behalten
+#ifdef symbol | ist symbol definiert wird der folgende Dateinhalt behalten
+#ifndef symbol | ist symbol *nicht* definiert wird der folgende Dateinhalt behalten
+#endif | Zeigt das Ende der bedingten kompilierung
+
+Mehrfaches Inkludieren vermeiden
+
+```cpp
+//myheader.h
+#ifndef MYHEADER_H_     //Include Wächer
+#define MYHEADER_H_
+//Quellcode
+#endif
+```
+
+Wenn mehree Headerdateien inkludiert werden, die wiederum andere Inkludieren kann das Kompilieren abgebrochen werden
+-> Wächter einfügen!
+
+### Modularisierung
+Modul als Sammlung zusammengehöriger Quell- und Headerdateien. 
+```cpp
+
+```
+
+```cpp
+
+```
+
+```cpp
+
+```
+
+```cpp
+
+```
 
 
 ## Strukturen, Aufzählungen und dynamische Speicherobjekte
