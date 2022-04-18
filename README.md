@@ -1817,30 +1817,471 @@ Wenn mehree Headerdateien inkludiert werden, die wiederum andere Inkludieren kan
 
 ### Modularisierung
 Modul als Sammlung zusammengehöriger Quell- und Headerdateien. 
+
+-> Moudule sollten selbstständig arbeiten!
+
+**Aufteilung**
+
+Privater und öffentlciher Bereich, wobei im öffentlichen die Schnittstellen sind. 
+
+#### Header
+endet auf .h oder .hpp
+
+Element | Beispiel
+---|---
+Aufzählungen| `enumclass RBG {ROT, GRÜN, BLAU};`
+bedingte Übersetzung| `#ifdef Bedingung`
+Deklarationen von Bezeichnern| `class MyClass`
+Funktionsdeklarationen| `int funktion(int *);`
+#include Anweisungen| `#include <headeratei>`
+Inline-funktionen (Definitionen)| `inline int quadrat(int v) {return v*v;}`
+Kommentare| `//Blahblah`
+Konstantendefinitionen|`constexpr PI = 3.1415;`
+Makros |`#define BLOP 1234`
+Namensräume |`namespace bereich {/* ... */}`
+Templates (Definitionen) |`template<typename X> class Y {/* ... */};`
+Templates (Deklarationen) |`template<typename X> class Y;`
+Typdefinitionen |`struct Liste {int var; Liste* next;};`
+
+Standard Header Files And Their Uses: 
+ 
+
+* #include<stdio.h>: It is used to perform input and output operations using functions scanf() and printf().
+* #include<iostream>: It is used as a stream of Input and Output using cin and cout.
+* #include<string.h>: It is used to perform various functionalities related to string manipulation like strlen(), strcmp(), strcpy(), size(), etc.
+* #include<math.h>: It is used to perform mathematical operations like sqrt(), log2(), pow(), etc.
+* #include<iomanip.h>: It is used to access set() and setprecision() function to limit the decimal places in variables.
+* #include<signal.h>: It is used to perform signal handling functions like signal() and raise().
+* #include<stdarg.h>:It is used to perform standard argument functions like va_start() and va_arg(). It is also used to indicate start of the variable-length argument list and to fetch the arguments from the variable-length argument list in the program respectively.
+* #include<errno.h>: It is used to perform error handling operations like errno(), strerror(), perror(), etc.
+* #include<fstream.h>: It is used to control the data to read from a file as an input and data to write into the file as an output.
+* #include<time.h>: It is used to perform functions related to date() and time() like setdate() and getdate(). It is also used to modify the system date and get the CPU time respectively.
+* #include<float.h>: It contains a set of various platform-dependent constants related to floating point values. These constants are proposed by ANSI C. They allow making programs more portable. Some examples of constants included in this header file are- e(exponent), b(base/radix), etc.
+* #include<limits.h>: It determines various properties of the various variable types. The macros defined in this header, limits the values of various variable types like char, int, and long. These limits specify that a variable cannot store any value beyond these limits, for example an unsigned character can store up to a maximum value of 255.
+* #include<assert.h>: It contains information for adding diagnostics that aid program debugging.
+* #include<ctype.h>: It contains function prototypes for functions that test characters for certain properties , and also function prototypes for functions that can be used to convert uppercase letters to lowercase letters and vice versa.
+* #include<locale.h>: It contains function prototypes and other information that enables a program to be modified for the current locale on which it’s running. It enable sthe computer system to handle different conventions for expressing data such as times, dates or large numbers throughout the world.
+* #include<setjmp.h>: It contains function prototypes for functions that allow bypassing of the usual function call and return sequence.
+* #include<stddef.h>: It contains common type definitions used by C for performing calculations.
+
+### Namensräume
+
+Vermeiden Konflikte bei der Benennung und Gruppieren Elemente.
+
 ```cpp
-
+namespace VIP {
+    int var;
+    void print() {
+        std::cout << "var: " << var << "\n";
+    }
+}
 ```
+Nuten mit qualifiziertem Namen `VIP::print()`
 
+Importieren mit `using namespace std;` damit kann ohne Scope Operator aufgerufen werden. 
+
+### Static
+
+Variable bleibt während Dauer der Übersetzungseinheit erhalten. 
+Wird der Wert in Funktion definiert, bleibt dieser nach Rücksprung erhalten -> Bsp counter() zählt wie oft Funktion aufgerufen wird mit der Variable count die increments in der Funktion hat. 1. Aufruf = 1, 2. Aufruf = 2 etc.
+ 
+ ### Extern
+ @ToDo
+
+ ### constexpr
+ Konstante zu Compilezeit erstellt
+
+ ### const
+ Konstante während Compilezeit erstellt (wartet bsp zuerst auf Userinput)
+
+ ### Inline
+ Statt Funktionsaufruf direkt der generierte Code einsetzen. Nur für simple Sachen.
 ```cpp
-
+inline int square(int v) {return v*v;}
 ```
-
-```cpp
-
-```
-
-```cpp
-
-```
-
 
 ## Strukturen, Aufzählungen und dynamische Speicherobjekte
 
+### Strukturen
+Definieren einen neuen Datentyp
+Ist weniger sicher als ein Objekt, da Public by default. 
 
+-> Semikolon am Ende!
+
+```cpp
+struct Struktur {
+    Typ1 Bezeichner1;
+    Typ2 Bezeichner2;
+    ...
+    TypN BezeichnerN;
+};
+```
+**Definieren, Elemente erzeugen und initialisieren**
+
+```cpp
+//Definieren
+struct Artikel {
+    inr nummer;             //Attribut
+    string bezeichnung;
+    int anzahl;
+};
+
+//Neuer Artikel erstellen
+Artikel laptop{};                               //Leer initialisieren (int = 0 und Stings = "")
+Artikel laptop = {1234, "Laptop 15 Zoll", 10};  //Mit Attributen initialisiert
+
+//Zugriff
+cout << laptop.nummer
+
+//Element zuweisen
+laptop.anzahl = 9;
+
+//Struktur an Funktion übergeben
+void print(const Artikel& laptop)
+void print(const Artikel* laptop)
+
+```
+Strukturen können wie Strings nicht mit == verglichen werden, hier müssen die einzelnen Attribute verglichen werden.
+
+### Enum
+
+Legt für Datentyp fest, welche Werte er annehmen darf. Kann als Klasse oder Struktur erstellt werden.
+
+```cpp
+enum struct Ampel {ROT, GRÜN, GELB};
+
+Ampel ampel{Ampel::ROT};    //Initialisierung
+ampel = Ampel::GELB;
+
+//Enum erweitern
+enum struct Ampel {ROT, GRÜN, GELB, BLAU};
+```
+### using
+Synonyme erstellen
+
+```cpp
+using Byte = unsigned char;
+Byte byte = 'x';
+//hier kann nun unsigned char, oder Byste verwendet werden
+```
+### Dynamische Speicherobjekte
+
+System fordert soviel Speicher an, wie der angegebene Datentyp braucht.
+
+For normal variables like “int a”, “char str[10]”, etc, memory is automatically allocated and deallocated. For dynamically allocated memory like “int *p = new int[10]”, it is programmers responsibility to deallocate memory when no longer needed. If programmer doesn’t deallocate memory, it causes memory leak (memory is not deallocated until program terminates). 
+
+```cpp
+// C++ program to illustrate dynamic allocation
+// and deallocation of memory using new and delete
+#include <iostream>
+using namespace std;
+ 
+int main ()
+{
+    // Pointer initialization to null
+    int* p = NULL;
+ 
+    // Request memory for the variable
+    // using new operator
+    p = new(nothrow) int;
+    if (!p)
+        cout << "allocation of memory failed\n";
+    else
+    {
+        // Store value at allocated address
+        *p = 29;
+        cout << "Value of p: " << *p << endl;
+    }
+ 
+    // Request block of memory
+    // using new operator
+    float *r = new float(75.25);
+ 
+    cout << "Value of r: " << *r << endl;
+ 
+    // Request block of memory of size n
+    int n = 5;
+    int *q = new(nothrow) int[n];
+ 
+    if (!q)
+        cout << "allocation of memory failed\n";
+    else
+    {
+        for (int i = 0; i < n; i++)
+            q[i] = i+1;
+ 
+        cout << "Value store in block of memory: ";
+        for (int i = 0; i < n; i++)
+            cout << q[i] << " ";
+    }
+ 
+    // freed the allocated memory
+    delete p;
+    delete r;
+ 
+    // freed the block of allocated memory
+    delete[] q;
+ 
+    return 0;
+}
+```
+
+```
+Value of p: 29
+Value of r: 75.25
+Value store in block of memory: 1 2 3 4 5 
+```
+Allocate block of memory: new operator is also used to allocate a block(an array) of memory of type data-type. 
+
+```cpp
+//pointer-variable = new data-type[size];
+ int *p = new int[10]
+ //Dynamically allocates memory for 10 integers continuously of 
+ //type int and returns pointer to the first element of the sequence, 
+ //which is assigned to p(a pointer). p[0] refers to first element, p[1] refers to second element and so on. 
+```
+### Smart Pointer
+
+Problems with Normal Pointers
+Take a look at the code below.
+```cpp
+#include <iostream>
+using namespace std;
+ 
+class Rectangle {
+private:
+    int length;
+    int breadth;
+};
+ 
+void fun()
+{
+    // By taking a pointer p and
+    // dynamically creating object
+    // of class rectangle
+    Rectangle* p = new Rectangle();
+}
+ 
+int main()
+{
+    // Infinite Loop
+    while (1) {
+        fun();
+    }
+}
+```
+In function fun, it creates a pointer that is pointing to the Rectangle object. The object Rectangle contains two integers, length and breadth. When the function fun ends, p will be destroyed as it is a local variable. But, the memory it consumed won’t be deallocated because we forgot to use delete p; at the end of the function. That means the memory won’t be free to be used by other resources. But, we don’t need the variable anymore, but we need the memory.
+
+In function main, fun is called in an infinite loop. That means it’ll keep creating p. It’ll allocate more and more memory but won’t free them as we didn’t deallocate it. The memory that’s wasted can’t be used again. Which is a memory leak. The entire heap memory may become useless for this reason. C++11 comes up with a solution to this problem, Smart Pointer.
+
+As we’ve known unconsciously not deallocating a pointer causes a memory leak that may lead to crash of the program. Languages Java, C# has Garbage Collection Mechanisms to smartly deallocate unused memory to be used again. The programmer doesn’t have to worry about any memory leak. C++11 comes up with its own mechanism that’s Smart Pointer. When the object is destroyed it frees the memory as well. So, we don’t need to delete it as Smart Pointer does will handle it.
+
+A Smart Pointer is a wrapper class over a pointer with an operator like * and -> overloaded. The objects of the smart pointer class look like normal pointers. But, unlike Normal Pointers it can deallocate and free destroyed object memory.
+
+The idea is to take a class with a pointer, destructor and overloaded operators like * and ->. *Since the destructor is automatically called when an object goes out of scope*, the dynamically allocated memory would automatically be deleted (or reference count can be decremented). Consider the following simple SmartPtr class.
+
+```cpp
+
+#include <iostream>
+using namespace std;
+ 
+class SmartPtr {
+    int* ptr; // Actual pointer
+public:
+    // Constructor: Refer https:// www.geeksforgeeks.org/g-fact-93/
+    // for use of explicit keyword
+    explicit SmartPtr(int* p = NULL) { ptr = p; }
+ 
+    // Destructor
+    ~SmartPtr() { delete (ptr); }
+ 
+    // Overloading dereferencing operator
+    int& operator*() { return *ptr; }
+};
+ 
+int main()
+{
+    SmartPtr ptr(new int());
+    *ptr = 20;
+    cout << *ptr;
+ 
+    // We don't need to call delete ptr: when the object
+    // ptr goes out of scope, the destructor for it is automatically
+    // called and destructor does delete ptr.
+ 
+    return 0;
+}
+```
+This only works for int. So, we’ll have to create Smart Pointer for every object? No, there’s a solution, Template. In the code below as you can see T can be of any type. 
+
+
+
+```cpp
+#include <iostream>
+using namespace std;
+ 
+// A generic smart pointer class
+template <class T>
+class SmartPtr {
+    T* ptr; // Actual pointer
+public:
+    // Constructor
+    explicit SmartPtr(T* p = NULL) { ptr = p; }
+ 
+    // Destructor
+    ~SmartPtr() { delete (ptr); }
+ 
+    // Overloading dereferencing operator
+    T& operator*() { return *ptr; }
+ 
+    // Overloading arrow operator so that
+    // members of T can be accessed
+    // like a pointer (useful if T represents
+    // a class or struct or union type)
+    T* operator->() { return ptr; }
+};
+ 
+int main()
+{
+    SmartPtr<int> ptr(new int());
+    *ptr = 20;
+    cout << *ptr;
+    return 0;
+}
+```
+Types of Smart Pointers
+1. unique_ptr
+unique_ptr stores one pointer only. We can assign a different object by removing the current object from the pointer. Notice the code below. First, the unique_pointer is pointing to P1. But, then we remove P1 and assign P2 so the pointer now points to P2.
+
+```cpp
+#include <iostream>
+using namespace std;
+#include <memory>
+ 
+class Rectangle {
+    int length;
+    int breadth;
+ 
+public:
+    Rectangle(int l, int b){
+        length = l;
+        breadth = b;
+    }
+ 
+    int area(){
+        return length * breadth;
+    }
+};
+ 
+int main(){
+ 
+    unique_ptr<Rectangle> P1(new Rectangle(10, 5));
+    cout << P1->area() << endl; // This'll print 50
+ 
+    // unique_ptr<Rectangle> P2(P1);
+    unique_ptr<Rectangle> P2;
+    P2 = move(P1);
+ 
+    // This'll print 50
+    cout << P2->area() << endl;
+ 
+    // cout<<P1->area()<<endl;
+    return 0;
+}
+Output: 
+50
+50
+```
+2. shared_ptr
+By using shared_ptr more than one pointer can point to this one object at a time and it’ll maintain a Reference Counter using use_count() method. 
+
+```cpp
+#include <iostream>
+using namespace std;
+#include <memory>
+ 
+class Rectangle {
+    int length;
+    int breadth;
+ 
+public:
+    Rectangle(int l, int b)
+    {
+        length = l;
+        breadth = b;
+    }
+ 
+    int area()
+    {
+        return length * breadth;
+    }
+};
+ 
+int main()
+{
+ 
+    shared_ptr<Rectangle> P1(new Rectangle(10, 5));
+    // This'll print 50
+    cout << P1->area() << endl;
+ 
+    shared_ptr<Rectangle> P2;
+    P2 = P1;
+ 
+    // This'll print 50
+    cout << P2->area() << endl;
+ 
+    // This'll now not give an error,
+    cout << P1->area() << endl;
+ 
+    // This'll also print 50 now
+    // This'll print 2 as Reference Counter is 2
+    cout << P1.use_count() << endl;
+    return 0;
+}
+Output: 
+50
+50
+50
+2
+```
+3. weak_ptr 
+It’s much more similar to shared_ptr except it’ll not maintain a Reference Counter. In this case, a pointer will not have a stronghold on the object. The reason is if suppose pointers are holding the object and requesting for other objects then they may form a Deadlock. 
+
+```cpp
+
+```
+
+
+```cpp
+
+```
+
+
+```cpp
+
+```
+
+
+```cpp
+
+```
+
+
+
+```cpp
+
+```
 
 ## Klassen
 
 
+```cpp
+
+```
+
+```cpp
+
+```
 
 ## Objekte und Klassenelemente
 
