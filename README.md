@@ -2247,33 +2247,163 @@ Output:
 3. weak_ptr 
 It’s much more similar to shared_ptr except it’ll not maintain a Reference Counter. In this case, a pointer will not have a stronghold on the object. The reason is if suppose pointers are holding the object and requesting for other objects then they may form a Deadlock. 
 
-```cpp
-
-```
-
-
-```cpp
-
-```
-
-
-```cpp
-
-```
-
-
-```cpp
-
-```
-
-
-
-```cpp
-
-```
-
 ## Klassen
 
+```cpp
+class Klasse {
+    //Blah
+};
+```
+
+![](https://media.geeksforgeeks.org/wp-content/cdn-uploads/Classes-and-Objects-in-C.png)
+
+
+### Zugriffskontrolle
+
+Defaultemässig ist alles auf Private.
+
+
+```cpp
+#########class.h##################
+class Class
+{
+    private:
+        // data hidden from outside world
+        int x;
+          
+    public:
+        // function to set value of 
+        // variable x
+        void set(int a);
+        // function to return value of
+        // variable x
+        int get();
+};
+
+#####class.cpp########
+#include class.h
+int Class::get() {
+    return x;
+}
+
+void Class::set(int new_x) {
+    x = new_x;
+}
+```
+
+### Pfeiloperator
+Zeiger auf instanzen von Klassen
+Objekte zur Laufzeit dynamisch erzeugen
+Verwendung von `std::unique_ptr`
+
+```cpp
+#include <iostream>
+ 
+using namespace std;
+
+class Box {
+   public:
+      // Constructor definition
+      Box(double l = 2.0, double b = 2.0, double h = 2.0) {
+         cout <<"Constructor called." << endl;
+         length = l;
+         breadth = b;
+         height = h;
+      }
+      double Volume() {
+         return length * breadth * height;
+      }
+      
+   private:
+      double length;     // Length of a box
+      double breadth;    // Breadth of a box
+      double height;     // Height of a box
+};
+
+int main(void) {
+   Box Box1(3.3, 1.2, 1.5);    // Declare box1
+   Box Box2(8.5, 6.0, 2.0);    // Declare box2
+   Box *ptrBox;                // Declare pointer to a class.
+
+   // Save the address of first object
+   ptrBox = &Box1;
+
+   // Now try to access a member using member access operator
+   cout << "Volume of Box1: " << ptrBox->Volume() << endl;
+
+   // Save the address of second object
+   ptrBox = &Box2;
+
+   // Now try to access a member using member access operator
+   cout << "Volume of Box2: " << ptrBox->Volume() << endl;
+  
+   return 0;
+}
+```
+```cpp
+//Dynamisch Speicher für neues Objekt anfordern und indirekt darauf zugreifen
+#include <memory>       //für std::unique_ptr
+//Speicher für neues Objekt anfordern
+std::unique_ptr<Konto> konto_ptr1 = std::make_unique<Konto>();
+konto_ptr1->print();
+
+//Varante2
+auto konto_ptr2 = std::make_unique<Konto>();
+konto_ptr2->set_name("Gehalt");
+konto_ptr2->print();
+```
+
+### Konstruktoren
+
+* selber Name wie Klasse
+* kein Rückgabewert
+* Public!
+
+```cpp
+//Deklaration in Konto.h
+class Konto {
+    public:
+        //Mehrere Konstruktoren
+        Konto();
+        Konto(long s, string n);
+        Konto(long s);
+        Konto(string n);
+    private:
+        //Attribute
+        long stand = 0;
+        string name = "Unbekannt";
+};
+
+//Definition in Konto.cpp
+Klassenname::Klassenname( Typ bezeichner1, Typ bezeichner2)
+: attribut1{ausdruck1}, attribut2{ausdruck2}                //Elementinitialisierer
+{
+    //Anweisungen
+}
+
+#include "konto.h"
+
+Konto::Konto() {}                         //Kann auch auf einer Zeile sein
+Konto::Konto(long s, string n)
+: stand{s}, name{n} {}
+Konto::Konto(long s) : stand{s} {}
+Konto::Konto(string n) : name{n} {}
+
+//Initialisierung
+Konto newKonto{11257, "Brieftasche"}
+```
+### Default Konstruktor
+
+Konstruktoren ohne Parameter
+Wenn Attribute nicht wie oben definiert
+
+```cpp
+Konto::Konto() : stand{0}, name{"Unbekannt} {}
+```
+
+```cpp
+
+```
 
 ```cpp
 
@@ -2283,9 +2413,56 @@ It’s much more similar to shared_ptr except it’ll not maintain a Reference C
 
 ```
 
+### Methoden
+
+
+
+
+```cpp
+
+```
+
+
+```cpp
+
+```
+
+
+```cpp
+
+```
+
+
+
+```cpp
+
+```
 ## Objekte und Klassenelemente
 
+```cpp
 
+```
+
+
+```cpp
+
+```
+
+
+```cpp
+
+```
+
+
+```cpp
+
+```
+
+
+
+```cpp
+
+```
 
 ## Operatoren überladen
 
