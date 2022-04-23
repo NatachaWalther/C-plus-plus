@@ -2591,50 +2591,224 @@ string Konto::get_name() const {
 ```
 ## Objekte und Klassenelemente
 
+### Objekte als Parameter
+
+### Übergabe per Referenz an Funktion
+```cpp
+//Deklaration
+void transfer(Konto& quelle, Konto& ziel, long betrag);
+```
+Verwendet Referenzen auf Objekte des Typs Konto als Parameter.
+```cpp
+//Definition
+void transfer(Konto& quelle, Konto& ziel, long betrag) {
+    quelle.set_stand(quelle.get_stand - betrag);
+    ziel.set_stand(ziel.get_stand + betrag);
+}
+```
+Nutzt die Klasse Konto, gehört aber nicht zu ihr, deshalb kein `Konto::`.
+Nutzt nur die öffentlichen Methoden der Klasse Konto.
+
+### Übergabe per Referenz an Methode
+Bearbeiten von privaten Daten eines Objekts per Methode.
+
+Instanz mit der die Methode aufgerufen wird steht schon fest, daher nur noch Ziel und Betrag definieren. Hier können nun direkt die privaten Attribute bearbeitet werden.
+
+*Eine Methode kann auch auf Attribute einer anderen Instanz der Klasse zugreifen!*
+```cpp
+//Deklaration
+class Konto {
+    public:
+        //Konstruktoren...
+        //Methoden...
+        void transfer(Konto& ziel, long betrag);
+    private:
+        long stand = 0;
+        string name = "Unbekannt";
+};
+```
+
+```cpp
+//Definition
+void Konto::transfer(Konto& ziel, long betrag) {
+    stand -= betrag;        //Zugriff via implizites this (this->stand)
+    ziel.stand += betrag;
+}
+```
+### friend Funktion
+
+Zugriff von Funktionen, Methoden oder fremden Klassen auf private Elemente. Mit der friend Funktion wird der Zugriff gewährt.
+
+```cpp
+// Prototyp der Friend Funktion
+  friend void transfer(Konto& quelle, Konto& ziel, long betrag);
+// Im public Bereich deklarieren.
+```
+```cpp
+// Definition der Funktion transfer()
+void transfer(Konto& quelle, Konto& ziel, long betrag) {
+  quelle.stand -= betrag;
+  ziel.stand += betrag;
+}
+```
+### Objekte als Rückgabewerte
+Kopie des Objekts als Rückgabewert. 
+
+Zwei konten werden verglichen, da nur lesend wird  der Parameter als Referenz übergeben und das Konto mit dem höchsten Kontostand wird als Kopie zurückgegeben.
+
+```cpp
+//Header-datei
+//Deklaration der Methode
+Konto get_max(const Konto&);
+//Prototyp der Funktion
+Konto get_max(const Konto& a, const Konto& b);      //Konto als Rückgabetyp
+
+//Definition der Methode
+Konto Konto::get_max(const Konto& other) {
+  if (stand > other.stand) {
+    return *this;                                   //Typische Verwendung des this zeigers (gib Kopie von aktueller Instanz zurück)
+  } else {
+    return other;
+  }
+}
+//Definition der Funktion
+Konto get_max(const Konto& a, const Konto& b) {
+  if (a.get_stand() > b.get_stand()) {
+    return a;
+  } else {
+    return b;
+  }
+}
+```
+Aufruf
+
+```cpp
+#include "konto.h"
+
+int main() {
+  Konto konto1{112'57, "Brieftasche"};
+  Konto konto2{650'32, "Girokonto"};
+  // Aufruf der Hilfsfunktion
+  Konto konto3 = get_max(konto1, konto2);
+  // Aufruf der Methode
+  Konto konto4 = konto1.get_max(konto2);
+
+  // Auch so kann die Hilfsfunktion verwendet werden
+  std::cout << get_max(konto1, konto2).get_name()
+            << " hat maximalen Stand\n";
+
+  // So geht es aber auch auch mit der Methode
+  std::cout << konto1.get_max(konto2).get_name()
+            << " hat maximalen Stand\n";
+
+  return EXIT_SUCCESS;
+}
+```
+### Referenz auf Objekte als Rückgabewerte
+*Nie eine Referenz auf ein Objekt zurückgeben, dass lokal in einer Methode oder Funktion erzeugt wurde. Immer mit einer Kopie arbeiten!*
+
+```cpp
+//Methodendeklaration
+Konto& get_max_ref(Konto& other);
+
+// Prototyp der Funktion
+Konto& get_max_ref(Konto& a, Konto& b);
+```
+Rückgabetyp ist nun eine Referenz auf ein Konto `Konto&`
+
+
+```cpp
+//Methodendefinition
+Konto& Konto::get_max_ref(Konto& other) {
+  if (stand > other.stand) {
+    return *this;
+  } else {
+    return other;
+  }
+}
+// Funktionsdefinition
+Konto& get_max_ref(Konto& a, Konto& b) {
+  if (a.get_stand() > b.get_stand()) {
+    return a;
+  } else {
+    return b;
+  }
+}
+```
+Ganz andere Verwendung möglich:
+
+```cpp
+get_max_ref(giro, spar).transfer(brief, 300'00);
+giro.get_max_ref(spar).transfer(brief, 50'00);
+```
+### Arrays von Objekten
+Erzeugen von Vektor mit 50 Instanzen der Klasse Konto. Der parameterlose Konstruktor muss hier verwendet werden!
+```cpp
+std::vector <Konto> kontovector(50);
+```
+Leeres Array und Step-by-Step füllen:
+```cpp
+  // Leeres vector-Array
+  std::vector<Konto> vkonto;
+  // Beispielsweise: Elemente hinten anfügen
+  vkonto.push_back(Konto{120'57, "Brieftasche"});
+  vkonto.push_back(Konto{"Festgeld"});
+  vkonto.push_back(Konto{});
+  // Inhalt ausgeben
+  for (auto& elem : vkonto) {
+    elem.print();
+  }
+```
+### Dynamische Objekte
+
 ```cpp
 
 ```
 
+```cpp
+
+```
 
 ```cpp
 
 ```
 
-
 ```cpp
 
 ```
 
-
-```cpp
-
-```
-
-
-
-```cpp
-
-```
 
 ## Operatoren überladen
+```cpp
 
+```
 
 
 ## Vererbung
 
+```cpp
 
+```
 
 ## Templates
 
+```cpp
 
+```
 
 ## Fehlerbehandlung
 
+```cpp
 
+```
 
 ## Ein-/Ausgabestreams
+```cpp
 
+```
 
 ## Weitere Sprachelemente
+```cpp
 
+```
 
