@@ -2392,50 +2392,202 @@ Konto::Konto(string n) : name{n} {}
 //Initialisierung
 Konto newKonto{11257, "Brieftasche"}
 ```
-### Default Konstruktor
+### Copy Konstruktor
 
-Konstruktoren ohne Parameter
-Wenn Attribute nicht wie oben definiert
+Existierendes Objekt als Vorlage für eine neue Instanzierung
 
 ```cpp
-Konto::Konto() : stand{0}, name{"Unbekannt} {}
+Konto konto01{200000. "Festgeld"};
+Konto konto02{konto01};             //
+Konto konto03 = konto01;            //neue Instanz
+```
+Attribute des Originals werden elementweise kopiert.
+
+Zeiger (rohe und unique) dürfen nicht eifach kopiert werden.
+
+Definition eigener Kopierkonstruktor um Deep Copy zu machen (compiler macht shallow). 
+Dabei werden beispielsweise Pointer oder Referenzen auf neue Orte im Memory zeigen, 
+bei shallow zeigen diese auf die selben Orte wie das Original (Bild 1).
+
+![](https://media.geeksforgeeks.org/wp-content/uploads/copy-constructor.png)
+![](https://media.geeksforgeeks.org/wp-content/uploads/copy-constructor1.png)
+
+```cpp
+Klassenname ( const Klassenname &altesObjekt);
+ ############## konto.h #####################
+ class Konto {
+ public:
+ 
+    //Konstruktor
+    Konto(long s, string n);
+
+    //Kopierkonstruktor
+    Konto(const Konto&rhs);
+
+};
+
+############# Konto.cpp #################
+#include "konto.h"
+//Konstruktor
+Konto::Konto(long s, string n): stand{s}, name{n} {} }
+
+//Kopierkonstruktor
+Konto::Konto(const Konto& rhs) : stand{rhs.stand}, name{rhs.name} {}
 ```
 
 ```cpp
 
+#include<iostream>
+#include<cstring>
+using namespace std;
+ 
+class String
+{
+private:
+    char *s;
+    int size;
+public:
+    String(const char *str = NULL); // constructor
+    ~String() { delete [] s;  }// destructor
+    String(const String&); // copy constructor
+    void print() { cout << s << endl; } // Function to print string
+    void change(const char *);  // Function to change
+};
+ 
+String::String(const char *str)
+{
+    size = strlen(str);
+    s = new char[size+1];
+    strcpy(s, str);
+}
+ 
+void String::change(const char *str)
+{
+    delete [] s;
+    size = strlen(str);
+    s = new char[size+1];
+    strcpy(s, str);
+}
+ 
+String::String(const String& old_str)
+{
+    size = old_str.size;
+    s = new char[size+1];
+    strcpy(s, old_str.s);
+}
+ 
+int main()
+{
+    String str1("GeeksQuiz");
+    String str2 = str1;
+ 
+    str1.print(); // what is printed ?
+    str2.print();
+ 
+    str2.change("GeeksforGeeks");
+ 
+    str1.print(); // what is printed now ?
+    str2.print();
+    return 0;
+}
+
+Output:
+GeeksQuiz
+GeeksQuiz
+GeeksQuiz
+GeeksforGeeks
 ```
 
-```cpp
+### Move Constructor
+Copy Constructor ist quasi Copy-Paste, Move Cosntructor ist Ausschneiden und einfügen. Nach dem Verschieben ist das Original "leer".
 
+Parameter dürfen hier nicht const sein, da diese ja entnommen werden und das alte Objekt dann leer ist.
+
+```cpp
+Klassenname (Klassenname &&)
+
+//Kopierkonstruktor verbieten wenn gewünscht
+Konto(const Konto &rhs) = delete;
+
+//Verschiebekonstruktor
+Konto(Konto &&rhs);
+
+//Daten für das neue Element
+Konto::Konto(Konto &&rhs) : stand{rhs.stand}, name{rhs.name} {
+    //Altes Element "leeren"
+    rhs.stand = 0;
+    rhs.name = "";
+}
+```
+Verschieben
+```cpp
+Konto konto1{10000, "Vorlage"};
+Konto konto2{std::move(konto1)};
+Konto konto3 = std::move(konto2);
+```
+### Destruktor
+
+Baut Objekte Kontrolliert ab. 
+Normalerweise vom Compiler generiert, eigener bei Pointern etc nötig.
+
+```cpp
+//Deklaration
+~Konto();
+
+//Definition
+Konto::~Konto() {std::cout << name << " deleted\n"};
 ```
 
-```cpp
+### inline-Methoden
+Funktion aufrufen, Rücksprundadresse auf Stack, Funktion anspringen, lokale Daten anlegen, Wieder freigeben, an Ausgangspunkt zurück
 
+-> Viel Aufwand bei kleinen Funktionen
+
+**Implizites inline:** innerhalb der Klassendefinition kann der Compiler selber inline Funktionen brauchen.
+
+-> Achtung, Headerdatei wird so chaotisch!
+
+**Explitites inline:** 
+
+```cpp
+inline long Konto::get_stand() {return stand;}
+inline void Konto::set_stand(long s) {stand = s;}
 ```
+### Konstante Methoden
 
-### Methoden
-
-
-
+Konstante Instantierung einer Klasse
 
 ```cpp
-
+const Konto konstant {100000, "konstante"};
 ```
+Nur noch Methoden aufrufen, die das Objekt nicht verändern (lesend)
 
-
+Methode als lesend deklarieren:
 ```cpp
+typ methode(parameter) const;
 
+//Deklaration
+long get_stand() cosnt;
+
+//Definition
+long Konto::get_stand() const {return stand;}
 ```
+So sind beispielsweise Schlaifen über konstante Vektoren möglich.
 
+### This-Zeiger
+
+Methode weiss zu welcher Instanz sie gehört. Interner This-Zeiger
+`Klassenname* const this = &Instanz`
+
+Mit dem This-Zeiger kann auf Mitglieder einer Klasse zugegriffen werden `this->Element`
+Das Macht der Compiler implizit für "normale Zugriffe".
+
+Beispiel get_name:
 
 ```cpp
-
-```
-
-
-
-```cpp
-
+string Konto::get_name() const {
+    return this->name;
+}
 ```
 ## Objekte und Klassenelemente
 
