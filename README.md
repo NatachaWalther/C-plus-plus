@@ -2760,7 +2760,470 @@ Leeres Array und Step-by-Step füllen:
   }
 ```
 ### Dynamische Objekte
+Dynamisch Objekte in einer Klasse zur Laufzeit reservieren:
+```cpp
+int main() {
+    //Ein Objekt zur Laufzeit vom Heap anfordern
+    auto konto_ptr = std::make_unique<Konto>(9999, "make_unique");
 
+    //Bsp roher Pointer (braucht delete)
+    //Konto* konto_ptr = new Konto(99999, "raw pointer");
+
+    konto_ptr->print();
+
+    //Fünf Objekte zur Laufzeit vom Heap anfordern
+    constexpr int SIZE = 5;
+    std::unique_ptr<Konto[]> dynArray1 = std::make_unique<Konto[]>(SIZE);
+
+    //Bsp roher Pointer (braucht delete[])
+    //Konto* dynArray1 = new Konto[SIZE];
+
+    dynArray1[0].set_name("Array0");
+    dynArray1[0].set_stand(00'00);
+    dynArray1[1] = Konto{11'11, "Array1"};
+    dynArray1[2] = {22'22, "Array2"};
+    dynArray1[3] = *konto_ptr;
+    dynArray1[3].set_stand(33'33);
+    dynArray1[4] = Konto{44'44, "Array4"};
+
+    // Ausgabe
+    for (size_t i = 0; i < SIZE; ++i) {
+    dynArray1[i].print();
+    }
+
+    // delete konto_ptr;
+    // delete[] dynArray1;
+
+    return EXIT_SUCCESS;
+}
+```
+
+### Klassenobjekte als Klassenattribute
+Nicht nur Basisdatentypen sondern auch Klassen als Datenelemente einer Klasse. Bsp Klasse Kunde hat Element Konto.
+
+-> Konstruktoren beachten!
+
+*Wenn für ein eingbettetes Attribut eines Klassendatentyps keinei Intitialisierung vorgesehen wird und kein Kostruktor aufgerufen wird, wird es mit dem Standardkonstruktor initialisiert.*
+
+```cpp
+// listings/12/08_classattr/person.h
+#ifndef _08__CLASSATTR_PERSON_H_
+#define _08__CLASSATTR_PERSON_H_
+
+#include <string>
+
+class Person {
+ public:
+  Person(std::string vn, std::string nn);
+
+  std::string get_vname() const;
+  void set_vname(std::string vn);
+  std::string get_nname() const;
+  void set_nname(std::string nn);
+  void print() const;
+
+ private:
+  std::string vname = "";
+  std::string nname = "";
+};
+
+#endif  // _08__CLASSATTR_PERSON_H_
+```
+
+```cpp
+// listings/12/08_classattr/person.cpp
+#include <iomanip>
+#include <iostream>
+
+#include "person.h"
+
+Person::Person(std::string vn, std::string nn)
+    : vname{vn}, nname{nn} {}
+
+std::string Person::get_vname() const {
+  return vname;
+}
+
+void Person::set_vname(std::string vn) {
+  vname = vn;
+}
+
+std::string Person::get_nname() const {
+  return nname;
+}
+
+void Person::set_nname(std::string nn) {
+  nname = nn;
+}
+
+void Person::print() const {
+  std::cout << get_vname() << ' ' << get_nname() << '\n';
+}
+```
+
+```cpp
+// listings/12/08_classattr/konto.h
+#ifndef _08_CLASSATRR_KONTO_H_
+#define _08_CLASSATRR_KONTO_H_
+
+#include <cstdlib>
+#include <iomanip>
+#include <iostream>
+#include <vector>
+#include <memory>
+#include <sstream>
+#include <string>
+
+#include "person.h"
+
+class Konto {
+ public:
+  // Deklaration der Konstruktoren
+  Konto(long s, std::string n, const Person& p);
+  Konto(long s, std::string n, std::string vn, std::string nn);
+
+  // Methoden der Klasse "Konto"
+  long get_stand() const;
+  void set_stand(long s);
+  void set_stand(long s) const = delete;
+  std::string get_name() const;
+  void set_name( std::string n);
+  void set_name( std::string n) const = delete;
+
+  void set_inhaber_vname(std::string vn);
+
+  void print() const;
+  void print_all() const;
+
+  void transfer(Konto& ziel, long betrag);
+
+ private:
+  std::string format_cent(long c) const;
+  // Attribute der Klasse "Konto"
+  long stand = 0;
+  std::string name = "Unbekannt";
+  Person inhaber = {"", ""};
+};
+
+// Prototyp der Funktion
+void transfer(Konto& quelle, Konto& ziel, long betrag);
+
+#endif  // _08_CLASSATRR_KONTO_H_
+```
+
+```cpp
+// listings/12/08_classattr/konto.cpp
+
+#include <cstdlib>
+#include <iomanip>
+#include <iostream>
+#include <vector>
+#include <memory>
+#include <sstream>
+#include <string>
+
+#include "konto.h"
+#include "person.h"
+
+// Definition der Konstruktoren
+
+Konto::Konto(long s, std::string n, const Person& p)    //Konstruktor nimmt auch Daten zu person auf
+    : stand{s}, name{n}, inhaber{p} {}                  
+Konto::Konto(long s, std::string n, std::string vn,     //Konstruktor nimmt auch Daten zu person auf
+             std::string nn)
+    : Konto(s, n, {vn, nn}) {}
+
+// Definition der Methoden
+long Konto::get_stand() const {
+  return stand;
+}
+
+void Konto::set_stand(long s) {
+  stand = s;
+}
+
+std::string Konto::get_name() const {
+  return name;
+}
+
+void Konto::set_name( std::string n) {
+  name = n;
+}
+
+void Konto::set_inhaber_vname(std::string vn) {
+  inhaber.set_vname(vn);
+}
+
+void Konto::print() const {
+  std::cout << name << ":\t";
+  std::cout << format_cent(stand) << " EUR\n";
+}
+
+std::string Konto::format_cent(long c) const {
+  std::stringstream stream{};
+  stream << std::fixed << std::setprecision(2);
+  stream << (c / 100.);
+  return stream.str();
+}
+
+void Konto::print_all() const {
+  std::cout << "Inhaber: ";
+  inhaber.print();
+  print();
+}
+
+// Definition der Funktion
+void transfer(Konto& quelle, Konto& ziel, long betrag) {
+  quelle.set_stand(quelle.get_stand() - betrag);
+  ziel.set_stand(ziel.get_stand() + betrag);
+}
+```
+```cpp
+// listings/12/08_classattr/main.cpp
+#include <cstdlib>
+
+#include "person.h"
+#include "konto.h"
+int main() {
+  Person tim{"Tim", "Testperson"};
+  tim.print();
+  std::cout << "Person: " << tim.get_vname() << ' '
+            << tim.get_nname() << '\n';
+
+  Konto ktim{2'000'00, "Sparbuch", tim};
+  ktim.print_all();
+
+  Person mia{"Mia", "Musterfrau"};
+  Konto kmia{5'000'50, "Festgeld", mia};
+  kmia.print_all();
+
+  ktim.set_inhaber_vname("Timotheus");
+  ktim.print_all();
+
+  return EXIT_SUCCESS;
+}
+```
+
+### Containerklasse als Klassenattribut
+Konto bekommt Vektor in dem transfers gespeichert werden.
+
+```cpp
+// listings/12/08_container/konto.h
+#ifndef _08_CONTAINER_KONTO_H_
+#define _08_CONTAINER_KONTO_H_
+
+#include <string>
+#include <vector>
+
+class Konto {
+ public:
+  // Deklaration der Konstruktoren
+  Konto();
+  Konto(long s, std::string n);
+  Konto(long s);
+  Konto(std::string n);
+
+  // Methoden der Klasse "Konto"
+  long get_stand() const;
+  void set_stand(long s);
+  void set_stand(long s) const = delete;
+  std::string get_name() const;
+  void set_name( std::string n);
+  void set_name( std::string n) const = delete;
+
+  void print() const;
+
+  void transfer(Konto& ziel, long betrag);
+
+ private:
+  std::string format_cent(long c) const;
+  // Attribute der Klasse "Konto"
+  long stand = 0;
+  std::string name = "Unbekannt";
+  std::vector<std::string> vtransfer;           //Transaktionsstrings
+};
+// Prototyp der Funktion
+void transfer(Konto& quelle, Konto& ziel, long betrag);
+
+#endif  //  _08_CONTAINER_KONTO_H_
+```
+
+
+```cpp
+// listings/12/08_container/konto.cpp
+
+#include "konto.h"
+
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <string>
+
+// Definition der Konstruktoren
+Konto::Konto() : Konto{0, "Unbekannt"} {}
+Konto::Konto(long s, std::string n) : stand{s}, name{n} {       //Initialer Kontostand als erster Eintrag
+  vtransfer.push_back(format_cent(s) + "<-Konstruktor");
+}
+Konto::Konto(long s) : Konto{s, "Unbekannt"} {}
+Konto::Konto(std::string n) : Konto{0, n} {}
+
+// Definition der Methoden
+long Konto::get_stand() const {
+  return stand;
+}
+
+void Konto::set_stand(long s) {
+  stand = s;
+}
+
+std::string Konto::get_name() const {
+  return name;
+}
+
+void Konto::set_name( std::string n) {
+  name = n;
+}
+
+void Konto::print() const {
+  std::cout << name << ":\t";
+  std::cout << format_cent(stand) << " EUR\n";
+  std::cout << "Liste der Transfers:\n";
+  for (const auto& el : vtransfer)
+    std::cout << " " << el << '\n';
+  std::cout << '\n';
+}
+
+void Konto::transfer(Konto& ziel, long betrag) {        //Anhängen einer Transaktion
+  stand -= betrag;
+  ziel.stand += betrag;
+  vtransfer.push_back(format_cent(betrag) + "->" + ziel.name);
+  ziel.vtransfer.push_back(format_cent(betrag) + "<-" +
+                           this->name);
+}
+
+std::string Konto::format_cent(long c) const {
+  std::stringstream stream{};
+  stream << std::fixed << std::setprecision(2);
+  stream << (c / 100.);
+  return stream.str();
+}
+```
+### Smart Pointer als Klassenattribut
+Vertreter der für ein bestehendes Konto gesetzt und entfernt werden kann.
+
+```cpp
+// listings/12/09_smartptr/konto.h
+#ifndef _09_SMARTPTR_KONTO_H_
+#define _09_SMARTPTR_KONTO_H_
+
+#include <cstdlib>
+#include <iomanip>
+#include <iostream>
+#include <vector>
+#include <memory>
+#include <sstream>
+#include <string>
+
+#include "person.h"
+
+class Konto {
+ public:
+  // Deklaration der Konstruktoren
+  Konto(long s, std::string n, std::string vn, std::string nn);
+  Konto(long s, std::string n, const Person& p);
+  Konto(const Konto& original);
+  // Methoden der Klasse "Konto"
+  long get_stand() const;
+  void set_stand(long s);
+  void set_stand(long s) const = delete;
+  std::string get_name() const;
+  void set_name( std::string n);
+  void set_name( std::string n) const = delete;
+
+  void set_inhaber_vname(std::string vn);
+  void set_vertreter(std::string vn, std::string nn);
+  void set_vertreter(const Person& p);
+  void set_vertreter();
+  void print() const;
+  void print_all() const;
+
+  void transfer(Konto& ziel, long betrag);
+
+ private:
+  std::string format_cent(long c) const;
+  // Attribute der Klasse "Konto"
+  long stand = 0;
+  std::string name = "Unbekannt";
+  Person inhaber;
+  std::unique_ptr<Person> vertreter = nullptr;      //direkte Initialisierung via Nullpointer
+};
+
+// Prototyp der Funktion
+void transfer(Konto& quelle, Konto& ziel, long betrag);
+
+#endif  // _09_SMARTPTR_KONTO_H_
+```
+
+
+```cpp
+void Konto::set_vertreter(std::string vn, std::string nn) {
+  vertreter = std::make_unique<Person>(vn, nn);
+}
+void Konto::set_vertreter(const Person& p) {
+  vertreter = std::make_unique<Person>(p);
+}
+
+void Konto::set_vertreter() {       //Löscht vertreter (methode reset())
+  vertreter = nullptr;
+}
+```
+set_vertreter() setzt eine Person als Vertreter
+Speicher für Objekkt Person wird dynamisch angefordert.
+std::make_unique konstruiert Instanz Person und speichert Adresse
+Entweder für vor- und Nachname oder direkt mit Personenobjekt
+
+```cpp
+void Konto::print_all() const {
+  std::cout << "Inhaber: ";
+  inhaber.print();
+  std::cout << "Vertreter: ";
+  if (vertreter) {                  //Smart pointer werden implizit in true umgewandelt wenn kein Nullpointer
+    vertreter->print();
+  } else {
+    std::cout << "(nicht gesetzt)\n";
+  }
+  print();
+}
+```
+
+```cpp
+// listings/12/09_smartptr/main.cpp
+#include <cstdlib>
+
+#include "person.h"
+#include "konto.h"
+int main() {
+  Konto ktim{5'000'50, "Festgeld", "Tim", "Testperson"};
+  ktim.set_vertreter("Bente", "Buddy");
+  ktim.print_all();
+  Person charlie{"Charlie", "Cozeichner"};
+  std::cout << "Neue Vertreter setzen\n";
+  ktim.set_vertreter(charlie);
+  std::cout << "Vertreter entfernen\n";
+  ktim.set_vertreter();
+  std::cout << "main() beenden\n";
+
+  Konto copy = ktim;
+  Konto verschiebung = std::move(ktim);
+  return EXIT_SUCCESS;
+}
+```
+Kopieren hier nicht möglich `Konto copy = ktim`, da Smart Pointer kein Copy Constructor haben. Da muss eienr geschrieben werden, oder move() gemacht werden! `Konto verschiebung = std::move(ktim)`
+
+### Statische Klassenelemente
+Klassenelemente unabhängig von einer Instanz der Klasse verwenden. Attribute und Methoden mit *static* sind nur einmal im Speicher vorhanden und können verwendet werden, wenn noch keine Instanz der Klasse existiert.
+
+Sie verwalten übergreifende Informationen einer Klasse wie die Anzahl Instanzen oder deren Minimal- und Maximalwerte.
 ```cpp
 
 ```
@@ -2776,7 +3239,6 @@ Leeres Array und Step-by-Step füllen:
 ```cpp
 
 ```
-
 
 ## Operatoren überladen
 ```cpp
