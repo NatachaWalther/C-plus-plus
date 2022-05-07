@@ -3491,47 +3491,159 @@ Wenn eine der Funktionen verwendet wird, müssen auch die anderen vier implement
     * Same
 
 ## Operatoren überladen
+Operatoren für benutzerdefinierte Datentypen wie Klassen, Strukturen und Aufzählungen(enum) zur Verfügung stellen.
 Beispiel Zusammenfügen von Stings (konkatenieren, concat):
 ```cpp
-std::string s1 {"Hallo"}, s2{"Welt\n"}
+std::string s1 {"Hallo "}, s2{"Welt\n"};
+std::cout << s1+s2; //Ausgabe Hallo Welt
 ```
+*Infix Notation* mit Operatorzeichen + zwischen den Operatoren ist lesbarer als Methode s1.cat(s2) oder Funktion cat(s1, s2).
+
+```cpp
+#include<iostream>
+using namespace std;
+ 
+class Complex {
+private:
+    int real, imag;
+public:
+    Complex(int r = 0, int i = 0) {real = r;   imag = i;}
+     
+    // This is automatically called when '+' is used with
+    // between two Complex objects
+    Complex operator + (Complex const &obj) {
+         Complex res;
+         res.real = real + obj.real;
+         res.imag = imag + obj.imag;
+         return res;
+    }
+    void print() { cout << real << " + i" << imag << '\n'; }
+};
+ 
+int main()
+{
+    Complex c1(10, 5), c2(2, 4);
+    Complex c3 = c1 + c2;
+    c3.print();
+}
+
+//Output
+//12 + i9
+```
+
+**Can we overload all operators?**
+Almost all operators can be overloaded except few. Following is the list of operators that cannot be overloaded. 
+
+* . (dot) 
+* :: 
+* ?: 
+* sizeof 
+
+**Important points about operator overloading** 
+1) For operator overloading to work, at least one of the operands must be a user defined class object.
+2) Assignment Operator: Compiler automatically creates a default assignment operator with every class. The default assignment operator does assign all members of right side to the left side and works fine most of the cases (this behavior is same as copy constructor). See this for more details. 
+3) Conversion Operator: We can also write conversion operators that can be used to convert one type to another type.
+
+### Arithmetische operatoren überladen
+
+
+
 ```cpp
 
 ```
-
-```cpp
-
-```
-
-```cpp
-
-```
-
-```cpp
-
-```
-
-```cpp
-
-```
-
-```cpp
-
-```
-```cpp
-
-```
-
-```cpp
-
-```
-
-```cpp
-
-```
-
 
 ## Vererbung
+![](https://media.geeksforgeeks.org/wp-content/uploads/inheritance2.png)
+
+**Beispiel**
+```cpp
+class Person {
+    public:
+    //Konstruktor
+    Person() = default;
+    Person(std::string vn, std::string nn)
+      : vorname{vn}, nachname{nn} {}
+  void set_vorname(std::string str) {
+    vorname = str;
+  }
+  void set_nachname(std::string str) {
+    nachname = str;
+  }
+  std::string get_vorname() const {
+    return vorname;
+  }
+  std::string get_nachname() const {
+    return nachname;
+  }
+  void print() const {
+    std::cout << "[P]Vorname : " << vorname << '\n';
+    std::cout << "[P]Nachname: " << nachname << '\n';
+  }
+
+ private:
+  std::string vorname{};
+  std::string nachname{};
+  // weitere Daten ...
+};
+```
+
+```cpp
+#include <cstdlib>
+#include <iostream>
+#include "person.h"
+
+int main() {
+  Person p1{};
+  p1.set_vorname("Bente");
+  p1.set_nachname("Beispiel");
+  std::cout << p1.get_vorname() << " ";
+  std::cout << p1.get_nachname() << "\n";
+
+  Person p2{"Paula", "Person"};
+  p2.Person::print();
+}
+```
+
+Neue Klasse Kunde, die von Person erbt.
+
+```cpp
+#include "person.h"
+
+#include <iostream>
+#include <string>
+
+class Kunde : public Person {       //Name der abgeleteten Kasse
+
+ public:
+  unsigned long get_kundennummer() const {  //Nei definierte Methoden
+    return kundennummer;
+  }
+  void set_kundennummer(unsigned long nr) {
+    kundennummer = nr;
+  }
+
+ private:
+  unsigned long kundennummer = 0;
+  // Bankdaten ...
+};
+```
+
+Durch Vererbung erbt die Klasse der Methoden der Elternklasse, hier Setter und Getter für Vor- und Nachname, sowie print.
+
+```cpp
+
+```
+```cpp
+
+```
+
+```cpp
+
+```
+
+```cpp
+
+```
 
 ```cpp
 
