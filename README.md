@@ -3224,23 +3224,308 @@ Kopieren hier nicht möglich `Konto copy = ktim`, da Smart Pointer kein Copy Con
 Klassenelemente unabhängig von einer Instanz der Klasse verwenden. Attribute und Methoden mit *static* sind nur einmal im Speicher vorhanden und können verwendet werden, wenn noch keine Instanz der Klasse existiert.
 
 Sie verwalten übergreifende Informationen einer Klasse wie die Anzahl Instanzen oder deren Minimal- und Maximalwerte.
-```cpp
 
+Existieren unabhängig von instanzen und können anderen Objekten Daten zur Verfügung stellen.
+```cpp
+// listings/12/10_static/konto.h
+#include <string>
+
+class Konto {
+ public:
+  // Deklaration der Konstruktoren
+  Konto();
+  Konto(long s, std::string n);
+  Konto(long s);
+  Konto(std::string n);
+
+  // Deklaration des Destruktors
+  ~Konto();
+  // Methoden der Klasse "Konto"
+  long get_stand() const;
+  void set_stand(long s);
+  void set_stand(long s) const = delete;
+  std::string get_name() const;
+  void set_name( std::string n);
+  void set_name( std::string n) const = delete;
+
+  void print() const;
+
+  static void print_static();
+  static unsigned int get_anzahl();
+
+ private:
+  static std::string format_cent(long c);
+  // Attribute der Klasse "Konto"
+  long stand = 0;
+  std::string name = "Unbekannt";
+  static inline unsigned int anzahl = 0;
+  static inline long summe = 0;
+};
+```
+
+
+```cpp
+// listings/12/10_static/konto.cpp
+#include "konto.h"
+
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <string>
+
+// Wenn Attribute nicht als static inline 
+// vereinbart sind, sonder nur static
+// unsigned int Konto::anzahl = 0; 
+// long Konto::summe = 0;
+
+// Definition der Konstruktoren/Destruktor
+Konto::Konto(long s, std::string n) : stand{s}, name{n} {
+  summe += stand;
+  ++anzahl;
+}
+Konto::Konto() : Konto{0, "Unbekannt"} {}
+Konto::Konto(long s) : Konto{s, "Unbekannt"} {}
+Konto::Konto(std::string n) : Konto{0, n} {}
+
+Konto::~Konto() {
+  summe -= stand;
+  --anzahl;
+}
+// Definition der Methoden
+
+long Konto::get_stand() const {
+  return stand;
+}
+
+void Konto::set_stand(long s) {
+  summe -= stand;
+  summe += s;
+  stand = s;
+}
+
+std::string Konto::get_name() const {
+  return name;
+}
+
+void Konto::set_name( std::string n) {
+  name = n;
+}
+
+void Konto::print_static() {
+  std::cout << "Anzahl Konten: ";
+  std::cout << anzahl << '\n';
+  std::cout << "Summe[EUR]: ";
+  std::cout << format_cent(summe) << "\n\n";
+}
+
+void Konto::print() const {
+  std::cout << name << ":\t";
+  std::cout << format_cent(stand) << " EUR\n";
+  print_static();
+}
+
+unsigned int Konto::get_anzahl() {
+  return anzahl;
+}
+
+std::string Konto::format_cent(long c) {
+  std::stringstream stream{};
+  stream << std::fixed << std::setprecision(2);
+  stream << (c / 100.);
+  return stream.str();
+}
+}
 ```
 
 ```cpp
+// listings/12/10_static/main.cpp
+#include <cstdlib>
+#include <iostream>
+#include <memory>
+#include "konto.h"
 
+int main() {
+  Konto::print_static();
+  Konto konto1{800'05, "Girokonto"};
+  Konto konto2{100'02, "Brieftasche"};
+  konto2.print();
+  {
+    const Konto konto3{-600'00, "Kreditkarte"};
+    konto3.print();
+  }
+  std::cout << "get_anzahl: " << Konto::get_anzahl() << '\n';
+  Konto::print_static();
+
+  return EXIT_SUCCESS;
+}
 ```
+
+### Konstante Klassenelemente
+Konstante Attribute die nur bei Instanzierung gesetzt werden können.
 
 ```cpp
+// listings/12/11_constattr/konto.h
+#ifndef _11_CONSTATTR_KONTO_H_
+#define _11_CONSTATTR_KONTO_H_
 
+#include <string>
+
+class Konto {
+ public:
+  // Deklaration der Konstruktoren
+  Konto();
+  Konto(long s, std::string n, unsigned long num = 0);
+  Konto(long s);
+  Konto(std::string n);
+
+  // Methoden der Klasse "Konto"
+  long get_stand() const;
+  void set_stand(long s);
+  void set_stand(long s) const = delete;
+  unsigned long get_nummer() const;
+  std::string get_name() const;
+  void set_name( std::string n);
+  void set_name( std::string n) const = delete;
+
+  void print() const;
+
+  static void print_static();
+  static unsigned int get_anzahl();
+
+ private:
+  std::string format_cent(long c) const;
+  // Attribute der Klasse "Konto"
+
+  long stand = 0;
+  std::string name = "Unbekannt";
+  const unsigned long nummer;
+};
 ```
-
 ```cpp
+// listings/12/11_constattr/konto.cpp
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include "konto.h"
 
+// Definition der Konstruktoren
+Konto::Konto() : Konto{0, "Unbekannt", 0} {}
+Konto::Konto(long s, std::string n, unsigned long num)
+    : stand{s}, name{n}, nummer{num} {}
+Konto::Konto(long s) : Konto{s, "Unbekannt", 0} {}
+Konto::Konto(std::string n) : Konto{0, n, 0} {}
+
+// Definition der Methoden
+
+long Konto::get_stand() const {
+  return stand;
+}
+
+void Konto::set_stand(long s) {
+  stand = s;
+}
+
+std::string Konto::get_name() const {
+  return name;
+}
+
+void Konto::set_name(std::string n) {
+  name = n;
+}
+
+unsigned long Konto::get_nummer() const {
+  return nummer;
+}
+
+void Konto::print() const {
+  std::cout << nummer << ", ";
+  std::cout << name << ":\t";
+  std::cout << format_cent(stand) << " EUR\n";
+}
+
+std::string Konto::format_cent(long c) const {
+  std::stringstream stream{};
+  stream << std::fixed << std::setprecision(2);
+  stream << (c / 100.);
+  return stream.str();
+}
 ```
+```cpp
+// listings/12/11_constattr/main.cpp
+#include <cstdlib>
+#include <iostream>
+
+#include "konto.h"
+
+int main() {
+  Konto konto1{500'00, "Spendenkonto", 9709700L};
+  konto1.print();
+  Konto konto2{112'57, "Brieftasche"};
+  konto2.print();
+  Konto konto3{};
+  konto3.print();
+  return EXIT_SUCCESS;
+}
+```
+
+### The big five
+
+Wenn eine der Funktionen verwendet wird, müssen auch die anderen vier implementiert werden. 
+*Nutze keine rohen Zeiger!*
+
+* **Destruktor** *~Typ()*:
+    * Normalerweise kümmert sich der Compiler darum
+    * Kein *delete* für rohe Zeiger
+    * Daher Destruktor der Spreicher wieder freigibt
+* **Kopierkonstruktor** *Typ(const Typ&)*:
+    * Standardversion vom Compiler
+    * Beide Objekte der Instanz erhalten beim Kopieren einen Zeiger der auf dasselbe Speicherobjekt verweist
+    * Gibt eines der Objekte den Speicher frei, zeigt der andere auf ein ungültiges Objekt
+    * Version schreiben, die Inhalt des Zeigers kopiert und nicht die Adresse, auf die er verweist
+* **Zuweisungsoperator** *Typ& operator=(const Typ&)*:
+    * Wie Kopierkonstruktor zeigen beide Zeiger aud fasselbe Objekt
+* **Verschiebekonstruktor** *Typ(Typ&&)*:
+    * Same in green
+* **Verschiebezuweisung** *Typ& operator=(Typ&&)*:
+    * Same
 
 ## Operatoren überladen
+Beispiel Zusammenfügen von Stings (konkatenieren, concat):
+```cpp
+std::string s1 {"Hallo"}, s2{"Welt\n"}
+```
+```cpp
+
+```
+
+```cpp
+
+```
+
+```cpp
+
+```
+
+```cpp
+
+```
+
+```cpp
+
+```
+
+```cpp
+
+```
+```cpp
+
+```
+
+```cpp
+
+```
+
 ```cpp
 
 ```
